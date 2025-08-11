@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plan de Entrenamiento – Hipertrofia</title>
+  <meta name="description" content="Rutina de hipertrofia para hombre, 40 años, nivel intermedio. Plan semanal con temporizador de descanso, progreso y modo oscuro." />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #121317;
+      --muted: #9aa0a6;
+      --text: #e8eaed;
+      --brand: #6ee7b7;
+      --brand-2: #60a5fa;
+      --danger: #ef4444;
+      --ok: #22c55e;
+      --card: #181a20;
+      --border: #262a33;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f8fb;
+        --panel: #ffffff;
+        --muted: #44515f;
+        --text: #0f172a;
+        --brand: #059669;
+        --brand-2:#2563eb;
+        --card: #ffffff;
+        --border: #e5e7eb;
+        --shadow: 0 10px 30px rgba(2,6,23,.08);
+      }
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, var(--bg), #0c0d12 40%, var(--bg));
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 24px auto 80px;
+      padding: 0 16px;
+    }
+
+    header {
+      display: flex; gap: 16px; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 20; backdrop-filter: blur(8px);
+      background: color-mix(in oklab, var(--bg) 85%, transparent);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px; margin-bottom: 16px;
+    }
+
+    .title {
+      display: grid; gap: 4px;
+    }
+    .title h1 { font-size: clamp(20px, 3vw, 28px); margin: 0; letter-spacing: .2px; }
+    .title p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button, .chip {
+      appearance: none; border: 1px solid var(--border); background: var(--panel); color: var(--text);
+      padding: 10px 14px; border-radius: 12px; cursor: pointer; box-shadow: var(--shadow);
+      font-weight: 600; letter-spacing: .2px;
+    }
+    button:hover { transform: translateY(-1px); }
+    .btn-primary { background: linear-gradient(90deg, var(--brand), var(--brand-2)); color: #031014; border-color: transparent; }
+    .btn-ghost { background: transparent; }
+
+    .grid {
+      display: grid; gap: 16px; grid-template-columns: 1fr; align-items: start;
+    }
+
+    .tabs {
+      display: grid; gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .tab {
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      padding: 12px; border-radius: 14px; border: 1px solid var(--border);
+      background: var(--card); cursor: pointer; user-select: none; font-weight: 700;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+    }
+    .tab.active { border-color: color-mix(in oklab, var(--brand-2) 60%, var(--brand) 40%); background: linear-gradient(180deg, color-mix(in oklab, var(--card) 60%, var(--brand) 16%), var(--card)); }
+
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; }
+    .toolbar .left, .toolbar .right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+    .search { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); min-width: 220px; }
+    .select { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; font-size: 12px; font-weight: 800; color: var(--muted); padding: 12px; border-bottom: 1px solid var(--border); letter-spacing: .35px; text-transform: uppercase; }
+    tbody td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+
+    tbody tr:hover { background: color-mix(in oklab, var(--card) 92%, var(--brand) 8%); }
+
+    .badge { padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; border: 1px solid var(--border); background: var(--card); }
+    .badge.ok { border-color: color-mix(in oklab, var(--ok), var(--border) 60%); }
+
+    .note { color: var(--muted); font-size: 13px; }
+
+    .progress-wrap { display: flex; align-items: center; gap: 10px; }
+    .progress {
+      --val: 0%;
+      height: 10px; width: 160px; background: var(--border); border-radius: 999px; overflow: hidden; position: relative;
+    }
+    .progress::after {
+      content: ""; position: absolute; inset: 0; width: var(--val);
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+    }
+
+    .cards { display: none; }
+
+    @media (max-width: 760px) {
+      .table-wrap { display: none; }
+      .cards { display: grid; gap: 12px; padding: 12px; }
+      .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: grid; gap: 8px; }
+      .card h4 { margin: 0; }
+      .kv { display: grid; grid-template-columns: 120px 1fr; gap: 6px; font-size: 14px; }
+      .kv .k { color: var(--muted); }
+    }
+
+    .footer { margin-top: 16px; display: grid; gap: 8px; color: var(--muted); font-size: 14px; padding: 16px; }
+
+    .timer {
+      display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--card);
+      border-radius: 12px; padding: 6px 10px; font-weight: 700; cursor: pointer;
+    }
+    .timer .time { min-width: 54px; text-align: center; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">
+      <h1>Plan de Entrenamiento – Hipertrofia</h1>
+      <p>Hombre • 40 años • Nivel intermedio • Máquinas en gimnasio</p>
+    </div>
+    <div class="actions">
+      <button id="toggle-theme" class="btn-ghost" aria-label="Cambiar tema">🌙/☀️</button>
+      <button class="btn-primary" onclick="window.print()" aria-label="Imprimir o guardar como PDF">Imprimir / PDF</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid">
+      <div class="tabs" id="tabs"></div>
+
+      <div class="panel" id="panel">
+        <div class="toolbar">
+          <div class="left">
+            <input class="search" id="search" placeholder="Buscar ejercicio…" aria-label="Buscar ejercicio" />
+            <select class="select" id="filterGrupo" aria-label="Filtrar por grupo muscular">
+              <option value="">Todos los grupos</option>
+            </select>
+          </div>
+          <div class="right">
+            <div class="progress-wrap">
+              <span class="note">Progreso del día</span>
+              <div id="progress" class="progress" style="--val:0%"></div>
+              <span id="progressText" class="note">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-describedby="ayuda">
+            <thead>
+              <tr>
+                <th>Hecho</th>
+                <th>Grupo Muscular</th>
+                <th>Ejercicio</th>
+                <th>Series</th>
+                <th>Reps</th>
+                <th>Descanso</th>
+                <th>Notas</th>
+                <th>Timer</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="cards" id="cards"></div>
+
+        <div class="footer" id="ayuda">
+          <div><strong>Aspectos clave</strong></div>
+          <ul>
+            <li><strong>Ritmo controlado:</strong> 2 s al subir, 3 s al bajar.</li>
+            <li><strong>Progresión:</strong> cuando llegues al rango alto de repeticiones, aumenta el peso un 5–10%.</li>
+            <li><strong>Cuida la rodilla:</strong> evita sentadillas profundas o saltos.</li>
+            <li><strong>Cardio recomendado:</strong> 10–15 minutos post entrenamiento (bicicleta estática).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // --- Datos del plan ---
+    const BASE = {
+      Lunes: [
+        { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Press pecho horizontal', series: 4, reps: '8-10', descanso: '90 seg', notas: 'Controla el descenso' },
+        { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Press inclinado (máquina)', series: 3, reps: '10', descanso: '90 seg', notas: 'Mantén tensión' },
+        { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Press militar (máquina)', series: 4, reps: '8-10', descanso: '90 seg', notas: 'Espalda recta' },
+        { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Elevaciones laterales (máquina)', series: 3, reps: '12', descanso: '60 seg', notas: 'Movimiento controlado' },
+        { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Fondos asistidos', series: 3, reps: '8-10', descanso: '90 seg', notas: 'Ajusta asistencia según fuerza' },
+      ],
+      Martes: [
+        { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Jalón al pecho', series: 4, reps: '8-10', descanso: '90 seg', notas: 'No balancear el torso' },
+        { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Remo en máquina (cerrada)', series: 4, reps: '8-10', descanso: '90 seg', notas: 'Aprieta escápulas' },
+        { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Remo bajo (polea)', series: 3, reps: '10', descanso: '90 seg', notas: 'Espalda recta' },
+        { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Curl bíceps (máquina)', series: 3, reps: '10-12', descanso: '60 seg', notas: 'Mantén tensión' },
+        { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Curl bíceps martillo (polea)', series: 3, reps: '12', descanso: '60 seg', notas: 'Sin balanceo' },
+      ],
+      Miércoles: [
+        { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Prensa inclinada', series: 4, reps: '12', descanso: '90 seg', notas: 'Evita flexión profunda' },
+        { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Extensión de cuádriceps', series: 4, reps: '12', descanso: '60 seg', notas: 'Control ascenso y descenso' },
+        { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Curl femoral tumbado', series: 4, reps: '12', descanso: '60 seg', notas: 'Movimiento suave' },
+        { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Abductores (máquina)', series: 3, reps: '15', descanso: '45 seg', notas: 'Pausa en contracción' },
+        { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Elevación de talones sentado', series: 4, reps: '15', descanso: '45 seg', notas: 'Trabajo gemelos' },
+      ],
+      Jueves: 'Repetir Lunes',
+      Viernes: 'Repetir Martes',
+      Sábado: 'Repetir Miércoles',
+      Domingo: [ { grupo: 'Descanso activo', ejercicio: 'Caminata ligera / movilidad', series: '—', reps: '—', descanso: '—', notas: 'Recuperación activa' } ]
+    };
+
+    // Expande días repetidos
+    const PLAN = new Map(Object.entries(BASE).map(([dia, val]) => {
+      if (typeof val === 'string') {
+        const ref = val.replace('Repetir ', '').trim();
+        return [dia, BASE[ref]];
+      }
+      return [dia, val];
+    }));
+
+    // --- Estado & utilidades ---
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+    const keyFor = (dia, ejercicio) => `hipertrofia:${dia}:${ejercicio}`;
+
+    function getRestSecs(txt) {
+      if (!txt) return 60;
+      const m = String(txt).match(/(\d+)\s*seg/);
+      return m ? parseInt(m[1],10) : 60;
+    }
+
+    function saveTheme(isDark) { localStorage.setItem('hypert:dark', isDark ? '1' : '0'); }
+    function loadTheme() { return localStorage.getItem('hypert:dark') === '1'; }
+
+    function updateProgress(dia) {
+      const items = PLAN.get(dia) || [];
+      const total = items.length;
+      const done = items.filter(it => localStorage.getItem(keyFor(dia, it.ejercicio)) === '1').length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      $('#progress').style.setProperty('--val', pct + '%');
+      $('#progressText').textContent = pct + '%';
+    }
+
+    // --- Render ---
+    const tabs = $('#tabs');
+    const tbody = $('#tbody');
+    const cards = $('#cards');
+    const filterGrupo = $('#filterGrupo');
+
+    const dias = Array.from(PLAN.keys());
+
+    // Rellena tabs
+    dias.forEach((dia, idx) => {
+      const el = document.createElement('div');
+      el.className = 'tab' + (idx === 0 ? ' active' : '');
+      el.textContent = dia;
+      el.role = 'button'; el.tabIndex = 0; el.dataset.dia = dia;
+      el.addEventListener('click', () => selectDia(dia));
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectDia(dia); }});
+      tabs.appendChild(el);
+    });
+
+    // Rellena filtro de grupos
+    const grupos = new Set();
+    PLAN.forEach(list => list.forEach?.(x => grupos.add(x.grupo)));
+    [...grupos].sort().forEach(g => {
+      const opt = document.createElement('option'); opt.value = g; opt.textContent = g; filterGrupo.appendChild(opt);
+    });
+
+    let currentDia = dias[0];
+
+    function matchFilters(it) {
+      const q = $('#search').value.trim().toLowerCase();
+      const g = filterGrupo.value;
+      const okQ = !q || it.ejercicio.toLowerCase().includes(q) || it.notas.toLowerCase().includes(q);
+      const okG = !g || it.grupo === g;
+      return okQ && okG;
+    }
+
+    function renderDia(dia) {
+      tbody.innerHTML = '';
+      cards.innerHTML = '';
+      const data = PLAN.get(dia) || [];
+
+      data.filter(matchFilters).forEach((it, i) => {
+        // Tabla
+        const tr = document.createElement('tr');
+        const checked = localStorage.getItem(keyFor(dia, it.ejercicio)) === '1';
+        tr.innerHTML = `
+          <td><input aria-label="Marcar ejercicio como hecho" type="checkbox" ${checked ? 'checked' : ''} data-ej="${it.ejercicio}"></td>
+          <td><span class="badge">${it.grupo}</span></td>
+          <td><strong>${it.ejercicio}</strong></td>
+          <td>${it.series}</td>
+          <td>${it.reps}</td>
+          <td>${it.descanso}</td>
+          <td class="note">${it.notas}</td>
+          <td>
+            <button class="timer" data-secs="${getRestSecs(it.descanso)}" aria-label="Iniciar temporizador de descanso">
+              ⏱️ <span class="time">${getRestSecs(it.descanso)}s</span>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        // Cards móviles
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h4>${it.ejercicio}</h4>
+          <div class="kv"><div class="k">Grupo</div><div>${it.grupo}</div></div>
+          <div class="kv"><div class="k">Series</div><div>${it.series}</div></div>
+          <div class="kv"><div class="k">Reps</div><div>${it.reps}</div></div>
+          <div class="kv"><div class="k">Descanso</div><div>${it.descanso}</div></div>
+          <div class="kv"><div class="k">Notas</div><div class="note">${it.notas}</div></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+              <input type="checkbox" ${checked ? 'checked' : ''} data-ej="${it.ejercicio}"> Hecho
+            </label>
+            <button class="timer" data-secs="${getRestSecs(it.descanso)}" aria-label="Iniciar temporizador de descanso">⏱️ <span class="time">${getRestSecs(it.descanso)}s</span></button>
+          </div>
+        `;
+        cards.appendChild(card);
+      });
+
+      updateProgress(dia);
+    }
+
+    function selectDia(dia) {
+      currentDia = dia;
+      $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.dia === dia));
+      renderDia(dia);
+    }
+
+    // Filtros
+    $('#search').addEventListener('input', () => renderDia(currentDia));
+    filterGrupo.addEventListener('change', () => renderDia(currentDia));
+
+    // Delegación: checkboxes + timer
+    function onToggleCheck(target) {
+      const ej = target.getAttribute('data-ej');
+      if (!ej) return;
+      localStorage.setItem(keyFor(currentDia, ej), target.checked ? '1' : '0');
+      updateProgress(currentDia);
+    }
+
+    function onStartTimer(btn) {
+      const secs = parseInt(btn.getAttribute('data-secs'), 10) || 60;
+      startTimer(btn, secs);
+    }
+
+    document.addEventListener('change', (e) => {
+      if (e.target.matches('input[type="checkbox"][data-ej]')) onToggleCheck(e.target);
+    });
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.timer');
+      if (btn) onStartTimer(btn);
+    });
+
+    // Temporizador simple por botón
+    const runningTimers = new WeakMap();
+    function startTimer(btn, total) {
+      // Si ya existe, reinicia
+      if (runningTimers.has(btn)) { clearInterval(runningTimers.get(btn)); runningTimers.delete(btn); }
+      const timeEl = btn.querySelector('.time');
+      let left = total;
+      timeEl.textContent = left + 's';
+      btn.disabled = true;
+      btn.style.opacity = 0.85;
+
+      const id = setInterval(() => {
+        left -= 1; timeEl.textContent = left + 's';
+        if (left <= 0) {
+          clearInterval(id); runningTimers.delete(btn);
+          btn.disabled = false; btn.style.opacity = 1; timeEl.textContent = '¡Listo!';
+          // vibración si está disponible
+          if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+          // destello visual
+          btn.animate([{ backgroundColor: '#22c55e' }, { backgroundColor: 'transparent' }], { duration: 600, iterations: 2 });
+        }
+      }, 1000);
+      runningTimers.set(btn, id);
+    }
+
+    // Tema
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const storedDark = loadTheme();
+    document.documentElement.style.colorScheme = (storedDark || (prefersDark && storedDark !== false)) ? 'dark' : 'light';
+
+    $('#toggle-theme').addEventListener('click', () => {
+      const current = getComputedStyle(document.documentElement).colorScheme;
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.style.colorScheme = next;
+      saveTheme(next === 'dark');
+    });
+
+    // Inicializa
+    selectDia(currentDia);
+  </script>
+</body>
+</html>
