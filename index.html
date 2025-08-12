@@ -150,7 +150,6 @@
     </div>
     <div class="actions">
       <button id="toggle-theme" class="btn-ghost" aria-label="Cambiar tema">🌙/☀️</button>
-      <button class="btn-primary" onclick="window.print()" aria-label="Imprimir o guardar como PDF">Imprimir / PDF</button>
     </div>
   </header>
 
@@ -297,7 +296,13 @@
       const opt = document.createElement('option'); opt.value = g; opt.textContent = g; filterGrupo.appendChild(opt);
     });
 
-    let currentDia = dias[0];
+    // Restaura filtros y búsqueda
+    const savedFilter = localStorage.getItem('hypert:filter');
+    if (savedFilter) filterGrupo.value = savedFilter;
+    const savedSearch = localStorage.getItem('hypert:search') || '';
+    document.querySelector('#search').value = savedSearch;
+
+    let currentDia = localStorage.getItem('hypert:day') || dias[0];
 
     function matchFilters(it) {
       const q = $('#search').value.trim().toLowerCase();
@@ -358,12 +363,19 @@
     function selectDia(dia) {
       currentDia = dia;
       $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.dia === dia));
+      localStorage.setItem('hypert:day', dia);
       renderDia(dia);
     }
 
     // Filtros
-    $('#search').addEventListener('input', () => renderDia(currentDia));
-    filterGrupo.addEventListener('change', () => renderDia(currentDia));
+    $('#search').addEventListener('input', () => {
+      localStorage.setItem('hypert:search', $('#search').value.trim());
+      renderDia(currentDia);
+    });
+    filterGrupo.addEventListener('change', () => {
+      localStorage.setItem('hypert:filter', filterGrupo.value);
+      renderDia(currentDia);
+    });
 
     // Delegación: checkboxes + timer
     function onToggleCheck(target) {
