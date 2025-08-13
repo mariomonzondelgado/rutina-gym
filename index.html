@@ -3,441 +3,452 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Plan de Entrenamiento – Hipertrofia</title>
-  <meta name="description" content="Rutina de hipertrofia para hombre, 40 años, nivel intermedio. Plan semanal con temporizador de descanso, progreso y modo oscuro." />
+  <title>Plan de Entrenamiento – Hipertrofia (Avanzado)</title>
+  <meta name="description" content="Rutina de hipertrofia (40 años, nivel intermedio) con control de progreso, PR con histórico y notas, estimador de 1RM (Epley/Brzycki), tabla de %1RM y volumen semanal por grupo (series×reps×peso)." />
   <style>
     :root {
-      --bg: #0b0c10;
-      --panel: #121317;
-      --muted: #9aa0a6;
-      --text: #e8eaed;
-      --brand: #6ee7b7;
-      --brand-2: #60a5fa;
-      --danger: #ef4444;
-      --ok: #22c55e;
-      --card: #181a20;
-      --border: #262a33;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --bg: #0b0c10; --panel:#111318; --card:#161922; --text:#e6eaf2; --muted:#98a2b3; --accent:#7dd3fc; --accent2:#34d399; --border:#273043; --warn:#f59e0b;
     }
-
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f7f8fb;
-        --panel: #ffffff;
-        --muted: #44515f;
-        --text: #0f172a;
-        --brand: #059669;
-        --brand-2:#2563eb;
-        --card: #ffffff;
-        --border: #e5e7eb;
-        --shadow: 0 10px 30px rgba(2,6,23,.08);
-      }
+    @media (prefers-color-scheme: light){
+      :root { --bg:#f6f7fb; --panel:#ffffff; --card:#ffffff; --text:#0f172a; --muted:#475569; --accent:#0284c7; --accent2:#059669; --border:#e5e7eb; }
     }
+    html,body{height:100%}
+    body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial; background:linear-gradient(180deg,var(--bg),#0d1018 45%,var(--bg)); color:var(--text)}
+    header{position:sticky; top:0; z-index:40; backdrop-filter: blur(10px); background: color-mix(in oklab, var(--bg) 85%, transparent); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:12px 16px}
+    .hgroup{display:grid; gap:4px}
+    .hgroup h1{margin:0; font-size:clamp(20px,3vw,28px)}
+    .hgroup p{margin:0; color:var(--muted); font-size:13px}
+    .btn{appearance:none; border:1px solid var(--border); background:var(--panel); color:var(--text); padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:700}
+    .btn:hover{transform:translateY(-1px)}
 
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background: linear-gradient(180deg, var(--bg), #0c0d12 40%, var(--bg));
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
+    .wrap{max-width:1180px; margin:20px auto 80px; padding:0 16px}
+    .tabs{display:grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap:10px}
+    .tab{padding:12px; text-align:center; border:1px solid var(--border); border-radius:14px; background:var(--card); cursor:pointer; font-weight:800}
+    .tab.active{outline:2px solid color-mix(in oklab, var(--accent) 60%, var(--accent2) 40%)}
 
-    .wrap {
-      max-width: 1100px;
-      margin: 24px auto 80px;
-      padding: 0 16px;
-    }
+    .panel{margin-top:12px; border:1px solid var(--border); border-radius:18px; background:var(--panel); overflow:hidden}
+    .toolbar{display:flex; gap:10px; align-items:center; justify-content:space-between; padding:12px; border-bottom:1px solid var(--border)}
+    .toolbar .left,.toolbar .right{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .search,.select{padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text)}
 
-    header {
-      display: flex; gap: 16px; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 20; backdrop-filter: blur(8px);
-      background: color-mix(in oklab, var(--bg) 85%, transparent);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px; margin-bottom: 16px;
-    }
+    table{width:100%; border-collapse:collapse}
+    thead th{font-size:12px; text-transform:uppercase; letter-spacing:.35px; text-align:left; color:var(--muted); padding:10px 12px; border-bottom:1px solid var(--border)}
+    tbody td{padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle}
+    tbody tr:hover{background:color-mix(in oklab, var(--card) 85%, var(--accent) 15%)}
+    .note{color:var(--muted); font-size:13px}
 
-    .title {
-      display: grid; gap: 4px;
-    }
-    .title h1 { font-size: clamp(20px, 3vw, 28px); margin: 0; letter-spacing: .2px; }
-    .title p { margin: 0; color: var(--muted); font-size: 13px; }
+    .num{width:90px; padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)}
+    .timer{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--card); border-radius:12px; padding:6px 10px; font-weight:800; cursor:pointer}
+    .timer .time{min-width:52px; text-align:center}
 
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    button, .chip {
-      appearance: none; border: 1px solid var(--border); background: var(--panel); color: var(--text);
-      padding: 10px 14px; border-radius: 12px; cursor: pointer; box-shadow: var(--shadow);
-      font-weight: 600; letter-spacing: .2px;
-    }
-    button:hover { transform: translateY(-1px); }
-    .btn-primary { background: linear-gradient(90deg, var(--brand), var(--brand-2)); color: #031014; border-color: transparent; }
-    .btn-ghost { background: transparent; }
+    .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:16px}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
 
-    .grid {
-      display: grid; gap: 16px; grid-template-columns: 1fr; align-items: start;
-    }
+    .card{border:1px solid var(--border); border-radius:16px; background:var(--panel); padding:12px}
+    .card h3{margin:0 0 8px 0; font-size:16px}
 
-    .tabs {
-      display: grid; gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    }
+    .progress-wrap{display:flex; align-items:center; gap:10px}
+    .progress{--val:0%; height:10px; width:160px; background:var(--border); border-radius:999px; position:relative; overflow:hidden}
+    .progress::after{content:""; position:absolute; inset:0; width:var(--val); background:linear-gradient(90deg,var(--accent),var(--accent2))}
 
-    .tab {
-      display: flex; align-items: center; justify-content: center; text-align: center;
-      padding: 12px; border-radius: 14px; border: 1px solid var(--border);
-      background: var(--card); cursor: pointer; user-select: none; font-weight: 700;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-    }
-    .tab.active { border-color: color-mix(in oklab, var(--brand-2) 60%, var(--brand) 40%); background: linear-gradient(180deg, color-mix(in oklab, var(--card) 60%, var(--brand) 16%), var(--card)); }
+    /* Modal PR */
+    .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:50}
+    .modal{background:var(--panel); border:1px solid var(--border); border-radius:16px; max-width:520px; width:92%; box-shadow:0 20px 60px rgba(0,0,0,.4); color:var(--text)}
+    .modal header{position:static; border-bottom:1px solid var(--border)}
+    .modal .content{padding:12px; display:grid; gap:10px}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    .row3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px}
+    .input, textarea{padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)}
+    textarea{min-height:72px; resize:vertical}
+    .actions{display:flex; gap:10px; justify-content:flex-end; padding:12px; border-top:1px solid var(--border)}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2)); border-color:transparent; color:#031014}
 
-    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); }
-
-    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; }
-    .toolbar .left, .toolbar .right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-
-    .search { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); min-width: 220px; }
-    .select { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); }
-
-    table { width: 100%; border-collapse: collapse; }
-    thead th { text-align: left; font-size: 12px; font-weight: 800; color: var(--muted); padding: 12px; border-bottom: 1px solid var(--border); letter-spacing: .35px; text-transform: uppercase; }
-    tbody td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-
-    tbody tr:hover { background: color-mix(in oklab, var(--card) 92%, var(--brand) 8%); }
-
-    .badge { padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; border: 1px solid var(--border); background: var(--card); }
-    .badge.ok { border-color: color-mix(in oklab, var(--ok), var(--border) 60%); }
-
-    .note { color: var(--muted); font-size: 13px; }
-
-    .progress-wrap { display: flex; align-items: center; gap: 10px; }
-    .progress {
-      --val: 0%;
-      height: 10px; width: 160px; background: var(--border); border-radius: 999px; overflow: hidden; position: relative;
-    }
-    .progress::after {
-      content: ""; position: absolute; inset: 0; width: var(--val);
-      background: linear-gradient(90deg, var(--brand), var(--brand-2));
-    }
-
-    .cards { display: none; }
-
-    @media (max-width: 760px) {
-      .table-wrap { display: none; }
-      .cards { display: grid; gap: 12px; padding: 12px; }
-      .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: grid; gap: 8px; }
-      .card h4 { margin: 0; }
-      .kv { display: grid; grid-template-columns: 120px 1fr; gap: 6px; font-size: 14px; }
-      .kv .k { color: var(--muted); }
-    }
-
-    .footer { margin-top: 16px; display: grid; gap: 8px; color: var(--muted); font-size: 14px; padding: 16px; }
-
-    .timer {
-      display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--card);
-      border-radius: 12px; padding: 6px 10px; font-weight: 700; cursor: pointer;
-    }
-    .timer .time { min-width: 54px; text-align: center; }
-
-    .hidden { display: none !important; }
+    canvas{max-width:100%; width:100%; height:240px}
+    .mini{font-size:12px; color:var(--muted)}
   </style>
 </head>
 <body>
   <header>
-    <div class="title">
+    <div class="hgroup">
       <h1>Plan de Entrenamiento – Hipertrofia</h1>
-      <p>Hombre • 40 años • Nivel intermedio • Máquinas en gimnasio</p>
+      <p>Hombre • 40 años • Intermedio • Máquinas en gimnasio</p>
     </div>
-    <div class="actions">
-      <button id="toggle-theme" class="btn-ghost" aria-label="Cambiar tema">🌙/☀️</button>
+    <div style="display:flex; gap:8px; align-items:center">
+      <button id="toggle-theme" class="btn" aria-label="Cambiar tema">🌙/☀️</button>
     </div>
   </header>
 
   <main class="wrap">
-    <section class="grid">
-      <div class="tabs" id="tabs"></div>
+    <div id="tabs" class="tabs" role="tablist"></div>
 
-      <div class="panel" id="panel">
-        <div class="toolbar">
-          <div class="left">
-            <input class="search" id="search" placeholder="Buscar ejercicio…" aria-label="Buscar ejercicio" />
-            <select class="select" id="filterGrupo" aria-label="Filtrar por grupo muscular">
-              <option value="">Todos los grupos</option>
-            </select>
+    <section class="panel">
+      <div class="toolbar">
+        <div class="left">
+          <input id="search" class="search" placeholder="Buscar ejercicio…" aria-label="Buscar ejercicio" />
+          <select id="filterGrupo" class="select" aria-label="Filtrar por grupo muscular">
+            <option value="">Todos los grupos</option>
+          </select>
+        </div>
+        <div class="right">
+          <div class="progress-wrap">
+            <span class="note">Progreso del día</span>
+            <div id="progress" class="progress" style="--val:0%"></div>
+            <span id="progressText" class="note">0%</span>
           </div>
-          <div class="right">
-            <div class="progress-wrap">
-              <span class="note">Progreso del día</span>
-              <div id="progress" class="progress" style="--val:0%"></div>
-              <span id="progressText" class="note">0%</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <div class="card" style="padding:0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Hecho</th>
+                  <th>Grupo</th>
+                  <th>Ejercicio</th>
+                  <th>Series</th>
+                  <th>Reps</th>
+                  <th>Descanso</th>
+                  <th>Notas</th>
+                  <th>Peso sesión (kg)</th>
+                  <th>Volumen</th>
+                  <th>PR</th>
+                  <th>Timer</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside>
+          <div class="card">
+            <h3>Volumen semanal por grupo</h3>
+            <p class="mini">Fórmula: ∑ (series × reps × peso sesión). Si el rango de reps es 8–10, se usa el máximo (10). Puedes ajustar el peso sesión por ejercicio y día.</p>
+            <table>
+              <thead><tr><th>Grupo</th><th>Total (kg)</th></tr></thead>
+              <tbody id="volumenBody"></tbody>
+              <tfoot><tr><td><strong>Total semana</strong></td><td id="volumenTotal">0</td></tr></tfoot>
+            </table>
+          </div>
+
+          <div class="card">
+            <h3>Analítica de PR / 1RM</h3>
+            <div class="row">
+              <select id="ejSelect" class="select" aria-label="Seleccionar ejercicio para analítica"></select>
+              <button id="addPRBtn" class="btn" aria-label="Añadir/actualizar PR">➕ Añadir PR</button>
+            </div>
+            <div style="margin-top:8px">
+              <canvas id="prChart" width="600" height="240" aria-label="Gráfica de PR"></canvas>
+            </div>
+            <div class="row3" style="margin-top:8px">
+              <div>
+                <div class="mini">PR máx.</div>
+                <div id="prMax">—</div>
+              </div>
+              <div>
+                <div class="mini">1RM (Epley / Brzycki / media)</div>
+                <div id="oneRM">—</div>
+              </div>
+              <div>
+                <div class="mini">Última nota</div>
+                <div id="lastNote" class="note">—</div>
+              </div>
+            </div>
+            <div style="margin-top:8px">
+              <h4 style="margin:0 0 6px 0">Tabla %1RM sugerida</h4>
+              <table>
+                <thead><tr><th>Reps objetivo</th><th>%1RM (aprox.)</th><th>Peso estimado</th></tr></thead>
+                <tbody id="percentBody"></tbody>
+              </table>
             </div>
           </div>
-        </div>
+        </aside>
+      </div>
 
-        <div class="table-wrap">
-          <table aria-describedby="ayuda">
-            <thead>
-              <tr>
-                <th>Hecho</th>
-                <th>Grupo Muscular</th>
-                <th>Ejercicio</th>
-                <th>Series</th>
-                <th>Reps</th>
-                <th>Descanso</th>
-                <th>Notas</th>
-                <th>Timer</th>
-              </tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-          </table>
-        </div>
-
-        <div class="cards" id="cards"></div>
-
-        <div class="footer" id="ayuda">
-          <div><strong>Aspectos clave</strong></div>
-          <ul>
-            <li><strong>Ritmo controlado:</strong> 2 s al subir, 3 s al bajar.</li>
-            <li><strong>Progresión:</strong> cuando llegues al rango alto de repeticiones, aumenta el peso un 5–10%.</li>
-            <li><strong>Cuida la rodilla:</strong> evita sentadillas profundas o saltos.</li>
-            <li><strong>Cardio recomendado:</strong> 10–15 minutos post entrenamiento (bicicleta estática).</li>
-          </ul>
-        </div>
+      <div class="card">
+        <h3>Aspectos clave</h3>
+        <ul>
+          <li><strong>Ritmo:</strong> 2 s concéntrico, 3 s excéntrico.</li>
+          <li><strong>Progresión:</strong> al alcanzar el tope de reps, sube 5–10% el peso.</li>
+          <li><strong>Cuidado rodilla:</strong> evita sentadillas profundas o saltos.</li>
+          <li><strong>Cardio sugerido:</strong> 10–15 min post sesión (bicicleta estática).</li>
+        </ul>
       </div>
     </section>
   </main>
 
+  <!-- Modal PR -->
+  <div id="prModal" class="backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <header style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px">
+        <strong>Registrar / Actualizar PR</strong>
+        <button id="prClose" class="btn" aria-label="Cerrar">✕</button>
+      </header>
+      <div class="content">
+        <div id="prModalEj" class="mini">Ejercicio: —</div>
+        <div class="row">
+          <div>
+            <label class="mini">Peso (kg)</label>
+            <input id="prKg" type="number" step="0.5" min="0" class="input" />
+          </div>
+          <div>
+            <label class="mini">Reps @ ese peso</label>
+            <input id="prReps" type="number" step="1" min="1" class="input" />
+          </div>
+        </div>
+        <div>
+          <label class="mini">Nota</label>
+          <textarea id="prNote" placeholder="Sensaciones, técnica, molestias…"></textarea>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="prSave" class="btn primary">Guardar entrada</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // --- Datos del plan ---
+    // ----- Datos base del plan -----
     const BASE = {
-      Lunes: [
+      "Lunes": [
         { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Press pecho horizontal', series: 4, reps: '8-10', descanso: '90 seg', notas: 'Controla el descenso' },
         { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Press inclinado (máquina)', series: 3, reps: '10', descanso: '90 seg', notas: 'Mantén tensión' },
         { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Press militar (máquina)', series: 4, reps: '8-10', descanso: '90 seg', notas: 'Espalda recta' },
         { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Elevaciones laterales (máquina)', series: 3, reps: '12', descanso: '60 seg', notas: 'Movimiento controlado' },
         { grupo: 'Push (Pecho, Hombro, Tríceps)', ejercicio: 'Fondos asistidos', series: 3, reps: '8-10', descanso: '90 seg', notas: 'Ajusta asistencia según fuerza' },
       ],
-      Martes: [
+      "Martes": [
         { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Jalón al pecho', series: 4, reps: '8-10', descanso: '90 seg', notas: 'No balancear el torso' },
         { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Remo en máquina (cerrada)', series: 4, reps: '8-10', descanso: '90 seg', notas: 'Aprieta escápulas' },
         { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Remo bajo (polea)', series: 3, reps: '10', descanso: '90 seg', notas: 'Espalda recta' },
         { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Curl bíceps (máquina)', series: 3, reps: '10-12', descanso: '60 seg', notas: 'Mantén tensión' },
         { grupo: 'Pull (Espalda, Bíceps)', ejercicio: 'Curl bíceps martillo (polea)', series: 3, reps: '12', descanso: '60 seg', notas: 'Sin balanceo' },
       ],
-      Miércoles: [
+      "Miércoles": [
         { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Prensa inclinada', series: 4, reps: '12', descanso: '90 seg', notas: 'Evita flexión profunda' },
         { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Extensión de cuádriceps', series: 4, reps: '12', descanso: '60 seg', notas: 'Control ascenso y descenso' },
         { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Curl femoral tumbado', series: 4, reps: '12', descanso: '60 seg', notas: 'Movimiento suave' },
         { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Abductores (máquina)', series: 3, reps: '15', descanso: '45 seg', notas: 'Pausa en contracción' },
         { grupo: 'Pierna adaptada (cuidado rodilla)', ejercicio: 'Elevación de talones sentado', series: 4, reps: '15', descanso: '45 seg', notas: 'Trabajo gemelos' },
       ],
-      Jueves: 'Repetir Lunes',
-      Viernes: 'Repetir Martes',
-      Sábado: 'Repetir Miércoles',
-      Domingo: [ { grupo: 'Descanso activo', ejercicio: 'Caminata ligera / movilidad', series: '—', reps: '—', descanso: '—', notas: 'Recuperación activa' } ]
+      "Jueves": 'Repetir Lunes',
+      "Viernes": 'Repetir Martes',
+      "Sábado": 'Repetir Miércoles',
+      "Domingo": [ { grupo: 'Descanso activo', ejercicio: 'Caminata ligera / movilidad', series: '—', reps: '—', descanso: '—', notas: 'Recuperación activa' } ]
     };
 
-    // Expande días repetidos
+    // ----- Expansión de días repetidos -----
     const PLAN = new Map(Object.entries(BASE).map(([dia, val]) => {
-      if (typeof val === 'string') {
-        const ref = val.replace('Repetir ', '').trim();
-        return [dia, BASE[ref]];
-      }
+      if (typeof val === 'string') { const ref = val.replace('Repetir ', '').trim(); return [dia, BASE[ref]]; }
       return [dia, val];
     }));
 
-    // --- Estado & utilidades ---
-    const $ = sel => document.querySelector(sel);
-    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    // ----- Helpers y estado -----
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
 
-    const keyFor = (dia, ejercicio) => `hipertrofia:${dia}:${ejercicio}`;
+    const kTheme = 'hypert:dark';
+    const kDay   = 'hypert:day';
+    const kSearch= 'hypert:search';
+    const kFilter= 'hypert:filter';
+    const kCheck = (dia, ej) => `hypert:done:${dia}:${ej}`;
+    const kPeso  = (dia, ej) => `hypert:weight:${dia}:${ej}`; // peso sesión (kg)
+    const kPRHist= ej => `hypert:prhist:${ej}`; // array de {kg, reps, note, at}
 
-    function getRestSecs(txt) {
-      if (!txt) return 60;
-      const m = String(txt).match(/(\d+)\s*seg/);
-      return m ? parseInt(m[1],10) : 60;
-    }
+    function getRestSecs(t){ const m = String(t||'').match(/(\d+)\s*seg/); return m? parseInt(m[1],10):60; }
+    function repsFrom(text){ if(!text) return 0; const m = String(text).match(/(\d+)(?:\s*[-–]\s*(\d+))?/); if(!m) return parseInt(text)||0; return m[2]? parseInt(m[2],10): parseInt(m[1],10); }
 
-    function saveTheme(isDark) { localStorage.setItem('hypert:dark', isDark ? '1' : '0'); }
-    function loadTheme() { return localStorage.getItem('hypert:dark') === '1'; }
+    function loadJSON(key, fallback){ try{ const v = localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch{return fallback} }
+    function saveJSON(key, obj){ localStorage.setItem(key, JSON.stringify(obj)); }
 
-    function updateProgress(dia) {
-      const items = PLAN.get(dia) || [];
-      const total = items.length;
-      const done = items.filter(it => localStorage.getItem(keyFor(dia, it.ejercicio)) === '1').length;
-      const pct = total ? Math.round((done / total) * 100) : 0;
-      $('#progress').style.setProperty('--val', pct + '%');
-      $('#progressText').textContent = pct + '%';
-    }
+    function prList(ej){ return loadJSON(kPRHist(ej), []); }
+    function addPR(ej, rec){ const list = prList(ej); list.push(rec); saveJSON(kPRHist(ej), list); return list; }
+    function maxPR(ej){ const list = prList(ej); if(!list.length) return null; return list.reduce((a,b)=> b.kg>a.kg? b:a, list[0]); }
 
-    // --- Render ---
-    const tabs = $('#tabs');
-    const tbody = $('#tbody');
-    const cards = $('#cards');
-    const filterGrupo = $('#filterGrupo');
+    function fmtDate(iso){ const d = new Date(iso); return d.toLocaleDateString(); }
 
+    function updateProgress(dia){ const items = PLAN.get(dia)||[]; const total=items.length; const done=items.filter(it=> localStorage.getItem(kCheck(dia, it.ejercicio))==='1').length; const pct = total? Math.round(done/total*100):0; $('#progress').style.setProperty('--val', pct+'%'); $('#progressText').textContent=pct+'%'; }
+
+    // ----- Render Tabs / Filtros -----
     const dias = Array.from(PLAN.keys());
+    const tabs = $('#tabs');
+    dias.forEach((d,i)=>{ const el = document.createElement('div'); el.className='tab'+(i===0?' active':''); el.textContent=d; el.role='tab'; el.tabIndex=0; el.dataset.dia=d; el.addEventListener('click',()=>selectDia(d)); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectDia(d);} }); tabs.appendChild(el); });
 
-    // Rellena tabs
-    dias.forEach((dia, idx) => {
-      const el = document.createElement('div');
-      el.className = 'tab' + (idx === 0 ? ' active' : '');
-      el.textContent = dia;
-      el.role = 'button'; el.tabIndex = 0; el.dataset.dia = dia;
-      el.addEventListener('click', () => selectDia(dia));
-      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectDia(dia); }});
-      tabs.appendChild(el);
-    });
+    // Filtro de grupos
+    const grupos = new Set(); PLAN.forEach(list=> list.forEach?.(x=>grupos.add(x.grupo)));
+    const filterGrupo = $('#filterGrupo');
+    [...grupos].sort().forEach(g=>{ const o = document.createElement('option'); o.value=g; o.textContent=g; filterGrupo.appendChild(o); });
 
-    // Rellena filtro de grupos
-    const grupos = new Set();
-    PLAN.forEach(list => list.forEach?.(x => grupos.add(x.grupo)));
-    [...grupos].sort().forEach(g => {
-      const opt = document.createElement('option'); opt.value = g; opt.textContent = g; filterGrupo.appendChild(opt);
-    });
+    // Tema
+    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const storedDark = localStorage.getItem(kTheme) === '1';
+    document.documentElement.style.colorScheme = storedDark || (prefersDark && storedDark !== false) ? 'dark':'light';
+    $('#toggle-theme').addEventListener('click',()=>{ const cs = getComputedStyle(document.documentElement).colorScheme; const next = cs==='dark'?'light':'dark'; document.documentElement.style.colorScheme=next; localStorage.setItem(kTheme, next==='dark'?'1':'0'); });
 
-    // Restaura filtros y búsqueda
-    const savedFilter = localStorage.getItem('hypert:filter');
-    if (savedFilter) filterGrupo.value = savedFilter;
-    const savedSearch = localStorage.getItem('hypert:search') || '';
-    document.querySelector('#search').value = savedSearch;
+    // Estado inicial
+    let currentDia = localStorage.getItem(kDay) || dias[0];
+    $('#search').value = localStorage.getItem(kSearch) || '';
+    filterGrupo.value = localStorage.getItem(kFilter) || '';
 
-    let currentDia = localStorage.getItem('hypert:day') || dias[0];
+    function matchFilters(it){ const q=$('#search').value.trim().toLowerCase(); const g=filterGrupo.value; const okQ = !q || it.ejercicio.toLowerCase().includes(q) || it.notas.toLowerCase().includes(q); const okG = !g || it.grupo===g; return okQ && okG; }
 
-    function matchFilters(it) {
-      const q = $('#search').value.trim().toLowerCase();
-      const g = filterGrupo.value;
-      const okQ = !q || it.ejercicio.toLowerCase().includes(q) || it.notas.toLowerCase().includes(q);
-      const okG = !g || it.grupo === g;
-      return okQ && okG;
-    }
-
-    function renderDia(dia) {
-      tbody.innerHTML = '';
-      cards.innerHTML = '';
-      const data = PLAN.get(dia) || [];
-
-      data.filter(matchFilters).forEach((it, i) => {
-        // Tabla
+    // ----- Tabla principal -----
+    const tbody = $('#tbody');
+    function renderDia(dia){
+      tbody.innerHTML='';
+      const data = PLAN.get(dia)||[];
+      data.filter(matchFilters).forEach(it=>{
+        const checked = localStorage.getItem(kCheck(dia,it.ejercicio))==='1';
+        const peso = parseFloat(localStorage.getItem(kPeso(dia,it.ejercicio)))||0;
+        const reps = repsFrom(it.reps);
+        const volumen = Math.round((it.series||0) * reps * (peso||0));
+        const pr = maxPR(it.ejercicio);
         const tr = document.createElement('tr');
-        const checked = localStorage.getItem(keyFor(dia, it.ejercicio)) === '1';
         tr.innerHTML = `
-          <td><input aria-label="Marcar ejercicio como hecho" type="checkbox" ${checked ? 'checked' : ''} data-ej="${it.ejercicio}"></td>
-          <td><span class="badge">${it.grupo}</span></td>
+          <td><input type="checkbox" data-ej="${it.ejercicio}" ${checked?'checked':''}></td>
+          <td><span class="note">${it.grupo}</span></td>
           <td><strong>${it.ejercicio}</strong></td>
           <td>${it.series}</td>
           <td>${it.reps}</td>
           <td>${it.descanso}</td>
           <td class="note">${it.notas}</td>
           <td>
-            <button class="timer" data-secs="${getRestSecs(it.descanso)}" aria-label="Iniciar temporizador de descanso">
-              ⏱️ <span class="time">${getRestSecs(it.descanso)}s</span>
-            </button>
+            <input type="number" step="0.5" min="0" class="num" value="${peso||''}" data-ej="${it.ejercicio}" data-dia="${dia}" aria-label="Peso de sesión en kg"/>
           </td>
+          <td><strong>${volumen.toLocaleString()}</strong></td>
+          <td>
+            <div class="note">${pr? pr.kg.toFixed(1)+' kg @'+pr.reps+' ('+fmtDate(pr.at)+')' : '—'}</div>
+            <button class="btn" data-pr="${it.ejercicio}">Actualizar PR</button>
+          </td>
+          <td><button class="timer" data-secs="${getRestSecs(it.descanso)}">⏱️ <span class="time">${getRestSecs(it.descanso)}s</span></button></td>
         `;
         tbody.appendChild(tr);
-
-        // Cards móviles
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <h4>${it.ejercicio}</h4>
-          <div class="kv"><div class="k">Grupo</div><div>${it.grupo}</div></div>
-          <div class="kv"><div class="k">Series</div><div>${it.series}</div></div>
-          <div class="kv"><div class="k">Reps</div><div>${it.reps}</div></div>
-          <div class="kv"><div class="k">Descanso</div><div>${it.descanso}</div></div>
-          <div class="kv"><div class="k">Notas</div><div class="note">${it.notas}</div></div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
-              <input type="checkbox" ${checked ? 'checked' : ''} data-ej="${it.ejercicio}"> Hecho
-            </label>
-            <button class="timer" data-secs="${getRestSecs(it.descanso)}" aria-label="Iniciar temporizador de descanso">⏱️ <span class="time">${getRestSecs(it.descanso)}s</span></button>
-          </div>
-        `;
-        cards.appendChild(card);
       });
-
       updateProgress(dia);
+      renderVolumenSemana();
+      refreshEjSelect();
+      renderAnalytics($('#ejSelect').value);
     }
 
-    function selectDia(dia) {
-      currentDia = dia;
-      $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.dia === dia));
-      localStorage.setItem('hypert:day', dia);
-      renderDia(dia);
-    }
-
-    // Filtros
-    $('#search').addEventListener('input', () => {
-      localStorage.setItem('hypert:search', $('#search').value.trim());
-      renderDia(currentDia);
-    });
-    filterGrupo.addEventListener('change', () => {
-      localStorage.setItem('hypert:filter', filterGrupo.value);
-      renderDia(currentDia);
-    });
-
-    // Delegación: checkboxes + timer
-    function onToggleCheck(target) {
-      const ej = target.getAttribute('data-ej');
-      if (!ej) return;
-      localStorage.setItem(keyFor(currentDia, ej), target.checked ? '1' : '0');
-      updateProgress(currentDia);
-    }
-
-    function onStartTimer(btn) {
-      const secs = parseInt(btn.getAttribute('data-secs'), 10) || 60;
-      startTimer(btn, secs);
-    }
-
-    document.addEventListener('change', (e) => {
-      if (e.target.matches('input[type="checkbox"][data-ej]')) onToggleCheck(e.target);
+    // Pesos y checks
+    document.addEventListener('change', (e)=>{
+      if (e.target.matches('input[type="checkbox"][data-ej]')){
+        const ej = e.target.getAttribute('data-ej');
+        localStorage.setItem(kCheck(currentDia, ej), e.target.checked?'1':'0');
+        updateProgress(currentDia);
+      }
+      if (e.target.matches('input.num[data-ej][data-dia]')){
+        const ej = e.target.getAttribute('data-ej'); const dia = e.target.getAttribute('data-dia');
+        const v = Math.max(0, Number(e.target.value||0));
+        localStorage.setItem(kPeso(dia, ej), String(v));
+        renderDia(currentDia); // recalcula volumen fila y resumen
+      }
+      if (e.target.id==='search'){ localStorage.setItem(kSearch, e.target.value.trim()); renderDia(currentDia); }
+      if (e.target.id==='filterGrupo'){ localStorage.setItem(kFilter, e.target.value); renderDia(currentDia); }
     });
 
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.timer');
-      if (btn) onStartTimer(btn);
-    });
-
-    // Temporizador simple por botón
+    // Timers
     const runningTimers = new WeakMap();
-    function startTimer(btn, total) {
-      // Si ya existe, reinicia
-      if (runningTimers.has(btn)) { clearInterval(runningTimers.get(btn)); runningTimers.delete(btn); }
-      const timeEl = btn.querySelector('.time');
-      let left = total;
-      timeEl.textContent = left + 's';
-      btn.disabled = true;
-      btn.style.opacity = 0.85;
-
-      const id = setInterval(() => {
-        left -= 1; timeEl.textContent = left + 's';
-        if (left <= 0) {
-          clearInterval(id); runningTimers.delete(btn);
-          btn.disabled = false; btn.style.opacity = 1; timeEl.textContent = '¡Listo!';
-          // vibración si está disponible
-          if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-          // destello visual
-          btn.animate([{ backgroundColor: '#22c55e' }, { backgroundColor: 'transparent' }], { duration: 600, iterations: 2 });
-        }
-      }, 1000);
-      runningTimers.set(btn, id);
-    }
-
-    // Tema
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const storedDark = loadTheme();
-    document.documentElement.style.colorScheme = (storedDark || (prefersDark && storedDark !== false)) ? 'dark' : 'light';
-
-    $('#toggle-theme').addEventListener('click', () => {
-      const current = getComputedStyle(document.documentElement).colorScheme;
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.style.colorScheme = next;
-      saveTheme(next === 'dark');
+    document.addEventListener('click', (e)=>{
+      const btnTimer = e.target.closest('.timer');
+      if (btnTimer){
+        const secs = parseInt(btnTimer.dataset.secs,10)||60;
+        if (runningTimers.has(btnTimer)){ clearInterval(runningTimers.get(btnTimer)); runningTimers.delete(btnTimer); }
+        const el = btnTimer.querySelector('.time'); let left = secs; el.textContent=left+'s'; btnTimer.disabled=true; btnTimer.style.opacity=.85;
+        const id = setInterval(()=>{ left--; el.textContent=left+'s'; if(left<=0){ clearInterval(id); runningTimers.delete(btnTimer); btnTimer.disabled=false; btnTimer.style.opacity=1; el.textContent='¡Listo!'; if(navigator.vibrate) navigator.vibrate([100,50,100]); } }, 1000);
+        runningTimers.set(btnTimer, id);
+        return;
+      }
+      const prBtn = e.target.closest('button[data-pr]');
+      if (prBtn){ openPRModal(prBtn.dataset.pr); }
+      if (e.target.id==='addPRBtn'){ const ej=$('#ejSelect').value; if(ej) openPRModal(ej); }
     });
 
-    // Inicializa
+    // Tabs selección
+    function selectDia(d){ currentDia = d; localStorage.setItem(kDay, d); $$('#tabs .tab').forEach(t=> t.classList.toggle('active', t.dataset.dia===d)); renderDia(d); }
+
+    // ----- Resumen de volumen semanal por grupo -----
+    function renderVolumenSemana(){
+      const acc = new Map(); let total = 0;
+      PLAN.forEach((list, dia)=>{
+        list.forEach(it=>{
+          const reps = repsFrom(it.reps); const series = Number(it.series)||0;
+          const peso = parseFloat(localStorage.getItem(kPeso(dia,it.ejercicio)))||0;
+          const vol = Math.round(series * reps * peso);
+          const key = it.grupo; acc.set(key, (acc.get(key)||0) + vol); total += vol;
+        });
+      });
+      const cuerpo = $('#volumenBody'); cuerpo.innerHTML='';
+      [...acc.entries()].sort((a,b)=> b[1]-a[1]).forEach(([g, v])=>{
+        const tr = document.createElement('tr'); tr.innerHTML = `<td>${g}</td><td><strong>${v.toLocaleString()}</strong></td>`; cuerpo.appendChild(tr);
+      });
+      $('#volumenTotal').textContent = total.toLocaleString();
+    }
+
+    // ----- Analítica de PR / 1RM -----
+    function refreshEjSelect(){
+      const sel = $('#ejSelect'); const prev = sel.value; const names = new Set();
+      PLAN.forEach(list=> list.forEach?.(x=> names.add(x.ejercicio)));
+      const arr = [...names].sort(); sel.innerHTML = arr.map(n=>`<option value="${n}">${n}</option>`).join('');
+      if (arr.includes(prev)) sel.value = prev;
+    }
+
+    function openPRModal(ej){ $('#prModalEj').textContent = 'Ejercicio: ' + ej; $('#prModal').style.display='flex'; $('#prModal').setAttribute('aria-hidden','false'); $('#prKg').value=''; $('#prReps').value=''; $('#prNote').value=''; $('#prSave').onclick = ()=>{ const kg = Number($('#prKg').value); const reps = parseInt($('#prReps').value,10); if(!(kg>=0) || !(reps>=1)){ alert('Introduce un peso y reps válidos'); return;} const rec = { kg, reps, note: $('#prNote').value.trim(), at: new Date().toISOString() }; addPR(ej, rec); $('#prModal').style.display='none'; $('#prModal').setAttribute('aria-hidden','true'); renderAnalytics(ej); renderDia(currentDia); }; }
+    $('#prClose').addEventListener('click', ()=>{ $('#prModal').style.display='none'; $('#prModal').setAttribute('aria-hidden','true'); });
+
+    function oneRepMaxEpley(w, r){ return w * (1 + r/30); }
+    function oneRepMaxBrzycki(w, r){ return w * (36 / (37 - r)); }
+
+    function renderAnalytics(ej){ if(!ej){ $('#prChart').getContext('2d').clearRect(0,0,600,240); $('#prMax').textContent='—'; $('#oneRM').textContent='—'; $('#lastNote').textContent='—'; $('#percentBody').innerHTML=''; return; }
+      const list = prList(ej).sort((a,b)=> new Date(a.at) - new Date(b.at));
+      const ctx = $('#prChart').getContext('2d'); ctx.clearRect(0,0,ctx.canvas.width, ctx.canvas.height);
+      // Draw axes
+      const padL=40, padB=24, padT=10, padR=10; const W = ctx.canvas.width, H = ctx.canvas.height; const X0 = padL, Y0 = H - padB, X1 = W - padR, Y1 = padT;
+      ctx.strokeStyle = getComputedStyle(document.documentElement).color; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(X0, Y0); ctx.lineTo(X1, Y0); ctx.moveTo(X0, Y0); ctx.lineTo(X0, Y1); ctx.stroke();
+      if(list.length){
+        const xs = list.map((_,i)=>i); const ys = list.map(p=>p.kg);
+        const xmin=0, xmax=Math.max(1, xs[xs.length-1]); const ymin=Math.min(...ys), ymax=Math.max(...ys);
+        const sx = (X1-X0)/(xmax - xmin); const sy = (Y0-Y1)/((ymax-ymin)||1);
+        // grid + labels
+        ctx.fillStyle = getComputedStyle(document.body).color; ctx.font='12px system-ui';
+        for(let i=0;i<=xmax;i++){ const x=X0 + (i-xmin)*sx; ctx.globalAlpha=.15; ctx.beginPath(); ctx.moveTo(x,Y0); ctx.lineTo(x,Y1); ctx.stroke(); ctx.globalAlpha=1; ctx.fillText(String(i+1), x-3, Y0+14); }
+        const steps=4; for(let i=0;i<=steps;i++){ const y = Y0 - i*(Y0-Y1)/steps; const val = (ymax - i*(ymax-ymin)/steps).toFixed(0); ctx.globalAlpha=.15; ctx.beginPath(); ctx.moveTo(X0,y); ctx.lineTo(X1,y); ctx.stroke(); ctx.globalAlpha=1; ctx.fillText(val+'kg', 4, y-2); }
+        // line
+        ctx.beginPath(); list.forEach((p,i)=>{ const x = X0 + (i-xmin)*sx; const y = Y0 - (p.kg - ymin)*sy; if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.strokeStyle = '#60a5fa'; ctx.lineWidth=2; ctx.stroke();
+        // points
+        list.forEach((p,i)=>{ const x = X0 + (i-xmin)*sx; const y = Y0 - (p.kg - ymin)*sy; ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fillStyle='#34d399'; ctx.fill(); });
+        const last = list[list.length-1]; const pr = list.reduce((a,b)=> b.kg>a.kg?b:a, list[0]);
+        $('#prMax').textContent = `${pr.kg.toFixed(1)} kg @${pr.reps} (${fmtDate(pr.at)})`;
+        // 1RM estimations (from last entry)
+        const epl = oneRepMaxEpley(last.kg, last.reps);
+        const brz = oneRepMaxBrzycki(last.kg, last.reps);
+        const avg = (epl + brz)/2;
+        $('#oneRM').textContent = `${epl.toFixed(1)} / ${brz.toFixed(1)} / ${avg.toFixed(1)} kg`;
+        $('#lastNote').textContent = last.note || '—';
+        // %1RM table for common targets
+        const targets = [3,4,5,6,8,10,12];
+        const tbody = $('#percentBody'); tbody.innerHTML='';
+        targets.forEach(r=>{ const pct = 1/(1 + r/30); // invert Epley roughly
+          const weight = avg * pct; const tr = document.createElement('tr'); tr.innerHTML = `<td>${r}</td><td>${(pct*100).toFixed(1)}%</td><td>${weight.toFixed(1)} kg</td>`; tbody.appendChild(tr); });
+      } else {
+        $('#prMax').textContent='—'; $('#oneRM').textContent='—'; $('#lastNote').textContent='—'; $('#percentBody').innerHTML='';
+      }
+      $('#ejSelect').value = ej;
+    }
+
+    // Inicializa select analítica
+    function initAnalytics(){ refreshEjSelect(); const first = $('#ejSelect').querySelector('option')?.value || ''; $('#ejSelect').addEventListener('change', e=> renderAnalytics(e.target.value)); if(first) renderAnalytics(first); }
+
+    // Persistencia de filtros
+    $('#search').addEventListener('input', ()=>{ localStorage.setItem(kSearch, $('#search').value.trim()); renderDia(currentDia); });
+    filterGrupo.addEventListener('change', ()=>{ localStorage.setItem(kFilter, filterGrupo.value); renderDia(currentDia); });
+
+    // Start
     selectDia(currentDia);
+    initAnalytics();
   </script>
 </body>
 </html>
