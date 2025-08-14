@@ -1,412 +1,75 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Plan de Entrenamiento – Hipertrofia (Avanzado, Mobile‑First)</title>
-  <meta name="description" content="Rutina de hipertrofia con control de progreso, volumen semanal, histórico de PR con notas, estimación de 1RM (Epley/Brzycki) y tabla de %1RM. Mobile‑first y persistente en localStorage." />
+  <title>Plan de Entrenamiento – Hipertrofia (RWD Mobile‑First)</title>
+  <meta name="description" content="Rutina de hipertrofia mobile‑first con responsive web design: control de progreso, volumen semanal, histórico de PR con notas, estimación de 1RM (Epley/Brzycki) y tabla de %1RM. Persistencia localStorage." />
   <style>
-    /*
-      Nota: las variables CSS definidas en :root permiten cambiar de tema
-      según el esquema de color del dispositivo. Se establecen dos juegos
-      (claro y oscuro) y se emplean colores neutros y acentos suaves.
-    */
-    :root {
-      --bg: #0b0c10;
-      --panel: #111318;
-      --card: #161922;
-      --text: #e6eaf2;
-      --muted: #98a2b3;
-      --accent: #7dd3fc;
-      --accent2: #34d399;
-      --border: #273043;
-    }
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f6f7fb;
-        --panel: #ffffff;
-        --card: #ffffff;
-        --text: #0f172a;
-        --muted: #475569;
-        --accent: #0284c7;
-        --accent2: #059669;
-        --border: #e5e7eb;
-      }
-    }
+    :root { --bg:#0b0c10; --panel:#111318; --card:#161922; --text:#e6eaf2; --muted:#98a2b3; --accent:#7dd3fc; --accent2:#34d399; --border:#273043; }
+    @media (prefers-color-scheme: light){ :root{ --bg:#f6f7fb; --panel:#ffffff; --card:#ffffff; --text:#0f172a; --muted:#475569; --accent:#0284c7; --accent2:#059669; --border:#e5e7eb; }}html,body{height:100%}
+body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial; background:linear-gradient(180deg,var(--bg),#0d1018 45%,var(--bg)); color:var(--text)}
 
-    /* Reseteo básico y fondo degradado.  El gradiente se extiende
-       verticalmente y crea un sutil contraste entre paneles. */
-    html, body {
-      height: 100%;
-    }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
-      background: linear-gradient(180deg, var(--bg), #0d1018 45%, var(--bg));
-      color: var(--text);
-    }
+header{position:sticky; top:0; z-index:40; backdrop-filter: blur(10px); background: color-mix(in oklab, var(--bg) 85%, transparent); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:12px 16px}
+.hgroup{display:grid; gap:4px}
+.hgroup h1{margin:0; font-size:clamp(20px,3vw,28px)}
+.hgroup p{margin:0; color:var(--muted); font-size:13px}
+.btn{appearance:none; border:1px solid var(--border); background:var(--panel); color:var(--text); padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:700}
+.btn:hover{transform:translateY(-1px)}
 
-    /* Cabecera fija con efecto borroso. El componente hgroup organiza
-       título y subtítulo. */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      backdrop-filter: blur(10px);
-      background: color-mix(in oklab, var(--bg) 85%, transparent);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-    }
-    .hgroup {
-      display: grid;
-      gap: 4px;
-    }
-    .hgroup h1 {
-      margin: 0;
-      font-size: clamp(20px, 3vw, 28px);
-    }
-    .hgroup p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .btn {
-      appearance: none;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: transform 0.1s ease-out;
-    }
-    .btn:hover {
-      transform: translateY(-1px);
-    }
+.wrap{max-width:1180px; margin:20px auto 80px; padding:0 16px}
+.tabs{display:grid; grid-template-columns: repeat(2, 1fr); gap:8px}
+@media (min-width:480px){ .tabs{grid-template-columns: repeat(3, 1fr);} }
+@media (min-width:768px){ .tabs{grid-template-columns: repeat(4, 1fr);} }
+@media (min-width:980px){ .tabs{grid-template-columns: repeat(7, 1fr);} }
+.tab{padding:12px; text-align:center; border:1px solid var(--border); border-radius:14px; background:var(--card); cursor:pointer; font-weight:800}
+.tab.active{outline:2px solid color-mix(in oklab, var(--accent) 60%, var(--accent2) 40%)}
 
-    .wrap {
-      max-width: 1180px;
-      margin: 20px auto 80px;
-      padding: 0 16px;
-    }
+.panel{margin-top:12px; border:1px solid var(--border); border-radius:18px; background:var(--panel); overflow:hidden}
 
-    /* Pestañas de navegación. El grid se ajusta según el ancho. */
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-    @media (min-width: 480px) {
-      .tabs {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-    @media (min-width: 768px) {
-      .tabs {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-    @media (min-width: 980px) {
-      .tabs {
-        grid-template-columns: repeat(7, 1fr);
-      }
-    }
-    .tab {
-      padding: 12px;
-      text-align: center;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--card);
-      cursor: pointer;
-      font-weight: 800;
-      user-select: none;
-    }
-    .tab.active {
-      outline: 2px solid color-mix(in oklab, var(--accent) 60%, var(--accent2) 40%);
-    }
+/* MOBILE-FIRST */
+.toolbar{display:flex; gap:10px; flex-direction:column; align-items:stretch; justify-content:initial; padding:12px; border-bottom:1px solid var(--border)}
+@media (min-width:640px){ .toolbar{flex-direction:row; align-items:center; justify-content:space-between} }
 
-    .panel {
-      margin-top: 12px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      background: var(--panel);
-      overflow: hidden;
-    }
+.search,.select{padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); min-height:40px; width:100%}
+.select{max-width:100%}
+@media (min-width:640px){ .search{width:auto; min-width:220px} }
 
-    /* Barra de herramientas. Se organiza en columna por defecto
-       y en filas en pantallas medias y superiores. */
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: initial;
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    @media (min-width: 640px) {
-      .toolbar {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
-    }
-    .search,
-    .select {
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      min-height: 40px;
-      width: 100%;
-    }
-    .select {
-      max-width: 100%;
-    }
-    @media (min-width: 640px) {
-      .search {
-        width: auto;
-        min-width: 220px;
-      }
-    }
+.grid{display:grid; grid-template-columns:1fr; gap:12px}
+@media (min-width:980px){ .grid{grid-template-columns:1.2fr .8fr; gap:16px} }
 
-    /* Contenedor principal de tarjetas y tabla. Ajusta columnas
-       según el espacio disponible. */
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-    @media (min-width: 980px) {
-      .grid {
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 16px;
-      }
-    }
+.card{border:1px solid var(--border); border-radius:16px; background:var(--panel); padding:12px}
+.card h3{margin:0 0 8px 0; font-size:16px}
 
-    .card {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--panel);
-      padding: 12px;
-    }
-    .card h3 {
-      margin: 0 0 8px 0;
-      font-size: 16px;
-    }
+table{width:100%; border-collapse:collapse}
+thead th{font-size:12px; text-transform:uppercase; letter-spacing:.35px; text-align:left; color:var(--muted); padding:10px 12px; border-bottom:1px solid var(--border)}
+tbody td{padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle}
 
-    /* Tablas. Las cabeceras usan mayúsculas y un color tenue. */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    thead th {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .35px;
-      text-align: left;
-      color: var(--muted);
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    tbody td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-    tbody tr:hover {
-      background: color-mix(in oklab, var(--card) 85%, var(--accent) 15%);
-    }
+.table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch}
 
-    /* Contenedor para permitir scroll horizontal en tablas amplias. */
-    .table-scroll {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .table-scroll table {
-      min-width: 760px;
-    }
+.note{color:var(--muted); font-size:13px}
+.num{width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); min-height:40px}
+@media (min-width:520px){ .num{width:110px} }
+.timer{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--card); border-radius:12px; padding:6px 10px; font-weight:800; cursor:pointer; min-height:36px}
+.timer .time{min-width:52px; text-align:center}
 
-    .note {
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .num {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      min-height: 40px;
-    }
-    @media (min-width: 520px) {
-      .num {
-        width: 110px;
-      }
-    }
-    .timer {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      border-radius: 12px;
-      padding: 6px 10px;
-      font-weight: 800;
-      cursor: pointer;
-      min-height: 36px;
-    }
-    .timer .time {
-      min-width: 52px;
-      text-align: center;
-    }
+.progress-wrap{display:flex; align-items:center; gap:10px}
+.progress{--val:0%; height:10px; width:160px; background:var(--border); border-radius:999px; position:relative; overflow:hidden}
+.progress::after{content:""; position:absolute; inset:0; width:var(--val); background:linear-gradient(90deg,var(--accent),var(--accent2))}
 
-    .progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .progress {
-      --val: 0%;
-      height: 10px;
-      width: 160px;
-      background: var(--border);
-      border-radius: 999px;
-      position: relative;
-      overflow: hidden;
-    }
-    .progress::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      width: var(--val);
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-    }
+/* === Responsive table → cards (móvil) === */
+@media (max-width: 640px){
+  table.rwd thead{ display:none; }
+  table.rwd, table.rwd tbody, table.rwd tr, table.rwd td{ display:block; width:100%; }
+  table.rwd tr{ border:1px solid var(--border); border-radius:14px; margin:8px 0; padding:8px; background:var(--card); }
+  table.rwd td{ border:none; padding:8px 10px; }
+  table.rwd td::before{ content: attr(data-label); display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.35px; margin-bottom:2px; }
+  table.rwd td[data-label="Hecho"]{ display:flex; align-items:center; gap:8px; }
+  table.rwd td[data-label="Timer"]{ display:flex; align-items:center; justify-content:space-between; }
+}
 
-    /* Estilos del modal para registrar/editar PR */
-    .backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
-    .modal {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      max-width: 520px;
-      width: 92%;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, .4);
-      color: var(--text);
-    }
-    .modal header {
-      position: static;
-      border-bottom: 1px solid var(--border);
-    }
-    .modal .content {
-      padding: 12px;
-      display: grid;
-      gap: 10px;
-    }
-    .row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    @media (min-width: 520px) {
-      .row {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    .row3 {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    @media (min-width: 640px) {
-      .row3 {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-    }
-    .input,
-    textarea {
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-    }
-    textarea {
-      min-height: 72px;
-      resize: vertical;
-    }
-    .actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      padding: 12px;
-      border-top: 1px solid var(--border);
-    }
-    .btn.primary {
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      border-color: transparent;
-      color: #031014;
-    }
+canvas{max-width:100%; width:100%; height:240px}
+.mini{font-size:12px; color:var(--muted)}
 
-    canvas {
-      max-width: 100%;
-      width: 100%;
-      height: 240px;
-    }
-    .mini {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /*
-      Ajustes responsive para tablas en pantallas estrechas.
-      Convierte cada fila en un bloque vertical y añade etiquetas
-      mediante data-label para mejorar la legibilidad. Solo se
-      activa en pantallas menores a 600px.
-    */
-    @media (max-width: 600px) {
-      .table-scroll table,
-      .table-scroll thead,
-      .table-scroll tbody,
-      .table-scroll th,
-      .table-scroll td,
-      .table-scroll tr {
-        display: block;
-      }
-      .table-scroll thead {
-        display: none;
-      }
-      .table-scroll tbody tr {
-        border-bottom: 1px solid var(--border);
-        margin-bottom: 12px;
-      }
-      .table-scroll td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 12px;
-      }
-      .table-scroll td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: var(--muted);
-        padding-right: 8px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -418,113 +81,107 @@
     <div style="display:flex; gap:8px; align-items:center">
       <button id="toggle-theme" class="btn" aria-label="Cambiar tema">🌙/☀️</button>
     </div>
-  </header>
+  </header>  <main class="wrap">
+    <div id="tabs" class="tabs" role="tablist"></div><section class="panel">
+  <div class="toolbar">
+    <input id="search" class="search" placeholder="Buscar ejercicio…" aria-label="Buscar ejercicio" />
+    <select id="filterGrupo" class="select" aria-label="Filtrar por grupo muscular">
+      <option value="">Todos los grupos</option>
+    </select>
+    <div class="progress-wrap">
+      <span class="note">Progreso del día</span>
+      <div id="progress" class="progress" style="--val:0%"></div>
+      <span id="progressText" class="note">0%</span>
+    </div>
+  </div>
 
-  <main class="wrap">
-    <div id="tabs" class="tabs" role="tablist"></div>
-
-    <section class="panel">
-      <div class="toolbar">
-        <input id="search" class="search" placeholder="Buscar ejercicio…" aria-label="Buscar ejercicio" />
-        <select id="filterGrupo" class="select" aria-label="Filtrar por grupo muscular">
-          <option value="">Todos los grupos</option>
-        </select>
-        <div class="progress-wrap">
-          <span class="note">Progreso del día</span>
-          <div id="progress" class="progress" style="--val:0%"></div>
-          <span id="progressText" class="note">0%</span>
+  <div class="grid">
+    <div>
+      <div class="card" style="padding:0">
+        <div class="table-scroll">
+          <table class="rwd">
+            <thead>
+              <tr>
+                <th>Hecho</th>
+                <th>Grupo</th>
+                <th>Ejercicio</th>
+                <th>Series</th>
+                <th>Reps</th>
+                <th>Descanso</th>
+                <th>Notas</th>
+                <th>Peso sesión (kg)</th>
+                <th>Volumen</th>
+                <th>PR</th>
+                <th>Timer</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
         </div>
       </div>
+    </div>
 
-      <div class="grid">
-        <div>
-          <div class="card" style="padding:0">
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Hecho</th>
-                    <th>Grupo</th>
-                    <th>Ejercicio</th>
-                    <th>Series</th>
-                    <th>Reps</th>
-                    <th>Descanso</th>
-                    <th>Notas</th>
-                    <th>Peso sesión (kg)</th>
-                    <th>Volumen</th>
-                    <th>PR</th>
-                    <th>Timer</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-              </table>
-            </div>
-          </div>
+    <aside>
+      <div class="card">
+        <h3>Volumen semanal por grupo</h3>
+        <p class="mini">∑ (series × reps × peso sesión). Para rangos (8–10) se usa el valor alto.</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Grupo</th><th>Total (kg)</th></tr></thead>
+            <tbody id="volumenBody"></tbody>
+            <tfoot><tr><td><strong>Total semana</strong></td><td id="volumenTotal">0</td></tr></tfoot>
+          </table>
         </div>
-
-        <aside>
-          <div class="card">
-            <h3>Volumen semanal por grupo</h3>
-            <p class="mini">∑ (series × reps × peso sesión). Para rangos (8–10) se usa el valor alto.</p>
-            <div class="table-scroll">
-              <table>
-                <thead><tr><th>Grupo</th><th>Total (kg)</th></tr></thead>
-                <tbody id="volumenBody"></tbody>
-                <tfoot><tr><td><strong>Total semana</strong></td><td id="volumenTotal">0</td></tr></tfoot>
-              </table>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>Analítica de PR / 1RM</h3>
-            <div class="row">
-              <select id="ejSelect" class="select" aria-label="Seleccionar ejercicio"></select>
-              <button id="addPRBtn" class="btn" aria-label="Añadir/actualizar PR">➕ Añadir PR</button>
-            </div>
-            <div style="margin-top:8px">
-              <canvas id="prChart" width="600" height="240" aria-label="Gráfica de PR"></canvas>
-            </div>
-            <div class="row3" style="margin-top:8px">
-              <div>
-                <div class="mini">PR máx.</div>
-                <div id="prMax">—</div>
-              </div>
-              <div>
-                <div class="mini">1RM (Epley / Brzycki / media)</div>
-                <div id="oneRM">—</div>
-              </div>
-              <div>
-                <div class="mini">Última nota</div>
-                <div id="lastNote" class="note">—</div>
-              </div>
-            </div>
-            <div style="margin-top:8px">
-              <h4 style="margin:0 0 6px 0">Tabla %1RM sugerida</h4>
-              <div class="table-scroll">
-                <table>
-                  <thead><tr><th>Reps objetivo</th><th>%1RM (aprox.)</th><th>Peso estimado</th></tr></thead>
-                  <tbody id="percentBody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </aside>
       </div>
 
       <div class="card">
-        <h3>Aspectos clave</h3>
-        <ul>
-          <li><strong>Ritmo:</strong> 2 s concéntrico, 3 s excéntrico.</li>
-          <li><strong>Progresión:</strong> al alcanzar el tope de reps, sube 5–10% el peso.</li>
-          <li><strong>Cuidado rodilla:</strong> evita sentadillas profundas o saltos.</li>
-          <li><strong>Cardio sugerido:</strong> 10–15 min post sesión (bicicleta estática).</li>
-        </ul>
+        <h3>Analítica de PR / 1RM</h3>
+        <div class="row">
+          <select id="ejSelect" class="select" aria-label="Seleccionar ejercicio"></select>
+          <button id="addPRBtn" class="btn" aria-label="Añadir/actualizar PR">➕ Añadir PR</button>
+        </div>
+        <div style="margin-top:8px">
+          <canvas id="prChart" width="600" height="240" aria-label="Gráfica de PR"></canvas>
+        </div>
+        <div class="row3" style="margin-top:8px">
+          <div>
+            <div class="mini">PR máx.</div>
+            <div id="prMax">—</div>
+          </div>
+          <div>
+            <div class="mini">1RM (Epley / Brzycki / media)</div>
+            <div id="oneRM">—</div>
+          </div>
+          <div>
+            <div class="mini">Última nota</div>
+            <div id="lastNote" class="note">—</div>
+          </div>
+        </div>
+        <div style="margin-top:8px">
+          <h4 style="margin:0 0 6px 0">Tabla %1RM sugerida</h4>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Reps objetivo</th><th>%1RM (aprox.)</th><th>Peso estimado</th></tr></thead>
+              <tbody id="percentBody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
+    </aside>
+  </div>
 
-  <!-- Modal PR -->
-  <div id="prModal" class="backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="card">
+    <h3>Aspectos clave</h3>
+    <ul>
+      <li><strong>Ritmo:</strong> 2 s concéntrico, 3 s excéntrico.</li>
+      <li><strong>Progresión:</strong> al alcanzar el tope de reps, sube 5–10% el peso.</li>
+      <li><strong>Cuidado rodilla:</strong> evita sentadillas profundas o saltos.</li>
+      <li><strong>Cardio sugerido:</strong> 10–15 min post sesión (bicicleta estática).</li>
+    </ul>
+  </div>
+</section>
+
+  </main>  <!-- Modal PR -->  <div id="prModal" class="backdrop" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal">
       <header style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px">
         <strong>Registrar / Actualizar PR</strong>
@@ -551,9 +208,7 @@
         <button id="prSave" class="btn primary">Guardar entrada</button>
       </div>
     </div>
-  </div>
-
-  <script>
+  </div>  <script>
     // ----- Datos base -----
     const BASE = {
       "Lunes": [
@@ -580,17 +235,12 @@
       "Jueves": 'Repetir Lunes',
       "Viernes": 'Repetir Martes',
       "Sábado": 'Repetir Miércoles',
-      "Domingo": [
-        { grupo: 'Descanso activo', ejercicio: 'Caminata ligera / movilidad', series: '—', reps: '—', descanso: '—', notas: 'Recuperación activa' }
-      ]
+      "Domingo": [ { grupo: 'Descanso activo', ejercicio: 'Caminata ligera / movilidad', series: '—', reps: '—', descanso: '—', notas: 'Recuperación activa' } ]
     };
 
-    // ----- Expansión de días repetidos -----
+    // ----- Expansión -----
     const PLAN = new Map(Object.entries(BASE).map(([dia, val]) => {
-      if (typeof val === 'string') {
-        const ref = val.replace('Repetir ', '').trim();
-        return [dia, BASE[ref]];
-      }
+      if (typeof val === 'string') { const ref = val.replace('Repetir ', '').trim(); return [dia, BASE[ref]]; }
       return [dia, val];
     }));
 
@@ -598,141 +248,74 @@
     const $ = s => document.querySelector(s);
     const $$ = s => Array.from(document.querySelectorAll(s));
 
-    const kTheme = 'hypert:dark', kDay = 'hypert:day', kSearch = 'hypert:search', kFilter = 'hypert:filter';
+    const kTheme='hypert:dark', kDay='hypert:day', kSearch='hypert:search', kFilter='hypert:filter';
     const kCheck = (dia, ej) => `hypert:done:${dia}:${ej}`;
-    const kPeso = (dia, ej) => `hypert:weight:${dia}:${ej}`;
-    const kPRHist = ej => `hypert:prhist:${ej}`; // [{kg,reps,note,at}]
+    const kPeso  = (dia, ej) => `hypert:weight:${dia}:${ej}`;
+    const kPRHist= ej => `hypert:prhist:${ej}`; // [{kg,reps,note,at}]
 
     const dias = Array.from(PLAN.keys());
     const fallbackDia = dias[0] || '';
     let currentDia = localStorage.getItem(kDay) || fallbackDia;
 
-    // Extrae segundos de una cadena de descanso, devolviendo 0 si no se encuentra un número.
-    function getRestSecs(t) {
-      const m = String(t || '').match(/(\d+)\s*seg/);
-      return m ? parseInt(m[1], 10) : 0;
-    }
-    // Devuelve el número más alto de un rango de repeticiones o el valor único.
-    function repsFrom(text) {
-      if (!text) return 0;
-      const m = String(text).match(/(\d+)(?:\s*[-–]\s*(\d+))?/);
-      if (!m) return parseInt(text) || 0;
-      return m[2] ? parseInt(m[2], 10) : parseInt(m[1], 10);
-    }
+    function getRestSecs(t){ const m = String(t||'').match(/(\d+)\s*seg/); return m? parseInt(m[1],10):60; }
+    function repsFrom(text){ if(!text) return 0; const m = String(text).match(/(\d+)(?:\s*[-–]\s*(\d+))?/); if(!m) return parseInt(text)||0; return m[2]? parseInt(m[2],10): parseInt(m[1],10); }
 
-    function loadJSON(key, fb) {
-      try {
-        const v = localStorage.getItem(key);
-        return v ? JSON.parse(v) : fb;
-      } catch {
-        return fb;
-      }
-    }
-    function saveJSON(key, obj) {
-      localStorage.setItem(key, JSON.stringify(obj));
-    }
-    function prList(ej) { return loadJSON(kPRHist(ej), []); }
-    function addPR(ej, rec) {
-      const list = prList(ej);
-      list.push(rec);
-      saveJSON(kPRHist(ej), list);
-      return list;
-    }
-    function maxPR(ej) {
-      const list = prList(ej);
-      if (!list.length) return null;
-      return list.reduce((a, b) => b.kg > a.kg ? b : a, list[0]);
-    }
+    function loadJSON(key, fb){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fb; }catch{ return fb } }
+    function saveJSON(key, obj){ localStorage.setItem(key, JSON.stringify(obj)); }
+
+    function prList(ej){ return loadJSON(kPRHist(ej), []); }
+    function addPR(ej, rec){ const list = prList(ej); list.push(rec); saveJSON(kPRHist(ej), list); return list; }
+    function maxPR(ej){ const list = prList(ej); if(!list.length) return null; return list.reduce((a,b)=> b.kg>a.kg?b:a, list[0]); }
     const fmtDate = iso => new Date(iso).toLocaleDateString();
 
-    function updateProgress(dia) {
-      const items = PLAN.get(dia) || [];
-      const total = items.length;
-      const done = items.filter(it => localStorage.getItem(kCheck(dia, it.ejercicio)) === '1').length;
-      const pct = total ? Math.round(done / total * 100) : 0;
-      $('#progress').style.setProperty('--val', pct + '%');
-      $('#progressText').textContent = pct + '%';
-    }
+    function updateProgress(dia){ const items = PLAN.get(dia)||[]; const total=items.length; const done=items.filter(it=> localStorage.getItem(kCheck(dia, it.ejercicio))==='1').length; const pct = total? Math.round(done/total*100):0; $('#progress').style.setProperty('--val', pct+'%'); $('#progressText').textContent=pct+'%'; }
 
     // ----- Tabs -----
     const tabsEl = $('#tabs');
-    dias.forEach((d) => {
-      const el = document.createElement('div');
-      el.className = 'tab' + (d === currentDia ? ' active' : '');
-      el.textContent = d;
-      el.role = 'button';
-      el.tabIndex = 0;
-      el.dataset.dia = d;
-      el.addEventListener('click', () => selectDia(d));
-      el.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          selectDia(d);
-        }
-      });
-      tabsEl.appendChild(el);
-    });
+    dias.forEach((d)=>{ const el=document.createElement('div'); el.className='tab'+(d===currentDia?' active':''); el.textContent=d; el.role='button'; el.tabIndex=0; el.dataset.dia=d; el.addEventListener('click',()=>selectDia(d)); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectDia(d);} }); tabsEl.appendChild(el); });
 
     // ----- Filtros y tema -----
     const filterGrupo = $('#filterGrupo');
-    const grupos = new Set();
-    PLAN.forEach(list => list.forEach?.(x => grupos.add(x.grupo)));
-    [...grupos].sort().forEach(g => {
-      const o = document.createElement('option');
-      o.value = g;
-      o.textContent = g;
-      filterGrupo.appendChild(o);
-    });
+    const grupos = new Set(); PLAN.forEach(list=> list.forEach?.(x=>grupos.add(x.grupo)));
+    [...grupos].sort().forEach(g=>{ const o=document.createElement('option'); o.value=g; o.textContent=g; filterGrupo.appendChild(o); });
 
     $('#search').value = localStorage.getItem(kSearch) || '';
     filterGrupo.value = localStorage.getItem(kFilter) || '';
 
     const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
     const storedDark = localStorage.getItem(kTheme) === '1';
-    document.documentElement.style.colorScheme = storedDark || (prefersDark && storedDark !== false) ? 'dark' : 'light';
-    $('#toggle-theme').addEventListener('click', () => {
-      const cs = getComputedStyle(document.documentElement).colorScheme;
-      const next = cs === 'dark' ? 'light' : 'dark';
-      document.documentElement.style.colorScheme = next;
-      localStorage.setItem(kTheme, next === 'dark' ? '1' : '0');
-    });
+    document.documentElement.style.colorScheme = storedDark || (prefersDark && storedDark !== false) ? 'dark':'light';
+    $('#toggle-theme').addEventListener('click',()=>{ const cs=getComputedStyle(document.documentElement).colorScheme; const next = cs==='dark'?'light':'dark'; document.documentElement.style.colorScheme=next; localStorage.setItem(kTheme, next==='dark'?'1':'0'); });
 
-    function matchFilters(it) {
-      const q = $('#search').value.trim().toLowerCase();
-      const g = filterGrupo.value;
-      const okQ = !q || it.ejercicio.toLowerCase().includes(q) || it.notas.toLowerCase().includes(q);
-      const okG = !g || it.grupo === g;
-      return okQ && okG;
-    }
+    function matchFilters(it){ const q=$('#search').value.trim().toLowerCase(); const g=filterGrupo.value; const okQ=!q || it.ejercicio.toLowerCase().includes(q) || it.notas.toLowerCase().includes(q); const okG=!g || it.grupo===g; return okQ && okG; }
 
     // ----- Render principal -----
     const tbody = $('#tbody');
-    function renderDia(dia) {
-      tbody.innerHTML = '';
-      const data = PLAN.get(dia) || [];
-      data.filter(matchFilters).forEach(it => {
-        const checked = localStorage.getItem(kCheck(dia, it.ejercicio)) === '1';
-        const peso = parseFloat(localStorage.getItem(kPeso(dia, it.ejercicio))) || 0;
+    function renderDia(dia){
+      tbody.innerHTML='';
+      const data = PLAN.get(dia)||[];
+      data.filter(matchFilters).forEach(it=>{
+        const checked = localStorage.getItem(kCheck(dia,it.ejercicio))==='1';
+        const peso = parseFloat(localStorage.getItem(kPeso(dia,it.ejercicio)))||0;
         const reps = repsFrom(it.reps);
-        const volumen = Math.round((Number(it.series) || 0) * reps * (peso || 0));
+        const volumen = Math.round((it.series||0) * reps * (peso||0));
         const pr = maxPR(it.ejercicio);
-        const showTimer = /^\d+\s*seg/.test(it.descanso);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td data-label="Hecho"><input type="checkbox" data-ej="${it.ejercicio}" ${checked ? 'checked' : ''}></td>
+          <td data-label="Hecho"><input type="checkbox" data-ej="${it.ejercicio}" ${checked?'checked':''}></td>
           <td data-label="Grupo"><span class="note">${it.grupo}</span></td>
           <td data-label="Ejercicio"><strong>${it.ejercicio}</strong></td>
           <td data-label="Series">${it.series}</td>
           <td data-label="Reps">${it.reps}</td>
           <td data-label="Descanso">${it.descanso}</td>
           <td data-label="Notas" class="note">${it.notas}</td>
-          <td data-label="Peso sesión (kg)"><input type="number" step="0.5" min="0" class="num" value="${peso || ''}" data-ej="${it.ejercicio}" data-dia="${dia}" aria-label="Peso de sesión en kg"/></td>
-          <td data-label="Volumen"><strong>${isNaN(volumen) ? '0' : volumen.toLocaleString()}</strong></td>
+          <td data-label="Peso sesión (kg)"><input type="number" step="0.5" min="0" class="num" value="${peso||''}" data-ej="${it.ejercicio}" data-dia="${dia}" aria-label="Peso de sesión en kg"/></td>
+          <td data-label="Volumen"><strong>${volumen.toLocaleString()}</strong></td>
           <td data-label="PR">
-            <div class="note">${pr ? pr.kg.toFixed(1) + ' kg @' + pr.reps + ' (' + fmtDate(pr.at) + ')' : '—'}</div>
+            <div class="note">${pr? pr.kg.toFixed(1)+' kg @'+pr.reps+' ('+fmtDate(pr.at)+')' : '—'}</div>
             <button class="btn" data-pr="${it.ejercicio}">Actualizar PR</button>
           </td>
-          <td data-label="Timer">${showTimer ? `<button class="timer" data-secs="${getRestSecs(it.descanso)}">⏱️ <span class="time">${getRestSecs(it.descanso)}s</span></button>` : '<span class="note">—</span>'}</td>`;
+          <td data-label="Timer"><button class="timer" data-secs="${getRestSecs(it.descanso)}">⏱️ <span class="time">${getRestSecs(it.descanso)}s</span></button></td>`;
         tbody.appendChild(tr);
       });
       updateProgress(dia);
@@ -741,268 +324,93 @@
       renderAnalytics($('#ejSelect').value);
     }
 
-    function selectDia(d) {
-      currentDia = d;
-      localStorage.setItem(kDay, d);
-      document.querySelectorAll('#tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.dia === d));
-      renderDia(d);
-    }
+    function selectDia(d){ currentDia=d; localStorage.setItem(kDay,d); document.querySelectorAll('#tabs .tab').forEach(t=> t.classList.toggle('active', t.dataset.dia===d)); renderDia(d); }
 
-    // ----- Eventos para checkbox, inputs y filtros -----
-    document.addEventListener('change', (e) => {
-      if (e.target.matches('input[type="checkbox"][data-ej]')) {
-        const ej = e.target.getAttribute('data-ej');
-        localStorage.setItem(kCheck(currentDia, ej), e.target.checked ? '1' : '0');
-        updateProgress(currentDia);
+    // ----- Eventos -----
+    document.addEventListener('change', (e)=>{
+      if (e.target.matches('input[type="checkbox"][data-ej]')){
+        const ej=e.target.getAttribute('data-ej'); localStorage.setItem(kCheck(currentDia, ej), e.target.checked?'1':'0'); updateProgress(currentDia);
       }
-      if (e.target.matches('input.num[data-ej][data-dia]')) {
-        const ej = e.target.getAttribute('data-ej');
-        const dia = e.target.getAttribute('data-dia');
-        const v = Math.max(0, Number(e.target.value || 0));
-        localStorage.setItem(kPeso(dia, ej), String(v));
-        renderDia(currentDia);
+      if (e.target.matches('input.num[data-ej][data-dia]')){
+        const ej=e.target.getAttribute('data-ej'); const dia=e.target.getAttribute('data-dia'); const v=Math.max(0, Number(e.target.value||0)); localStorage.setItem(kPeso(dia, ej), String(v)); renderDia(currentDia);
       }
-      if (e.target.id === 'search') {
-        localStorage.setItem(kSearch, e.target.value.trim());
-        renderDia(currentDia);
-      }
-      if (e.target.id === 'filterGrupo') {
-        localStorage.setItem(kFilter, e.target.value);
-        renderDia(currentDia);
-      }
+      if (e.target.id==='search'){ localStorage.setItem(kSearch, e.target.value.trim()); renderDia(currentDia); }
+      if (e.target.id==='filterGrupo'){ localStorage.setItem(kFilter, e.target.value); renderDia(currentDia); }
     });
 
-    // Timers y botones de PR
     const runningTimers = new WeakMap();
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', (e)=>{
       const btnTimer = e.target.closest('.timer');
-      if (btnTimer) {
-        const secs = parseInt(btnTimer.dataset.secs, 10) || 0;
-        // Si no hay segundos definidos, no iniciar
-        if (!secs) return;
-        if (runningTimers.has(btnTimer)) {
-          clearInterval(runningTimers.get(btnTimer));
-          runningTimers.delete(btnTimer);
-        }
-        const el = btnTimer.querySelector('.time');
-        let left = secs;
-        el.textContent = left + 's';
-        btnTimer.disabled = true;
-        btnTimer.style.opacity = .85;
-        const id = setInterval(() => {
-          left--;
-          el.textContent = left + 's';
-          if (left <= 0) {
-            clearInterval(id);
-            runningTimers.delete(btnTimer);
-            btnTimer.disabled = false;
-            btnTimer.style.opacity = 1;
-            el.textContent = '¡Listo!';
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-          }
-        }, 1000);
+      if (btnTimer){
+        const secs = parseInt(btnTimer.dataset.secs,10)||60;
+        if (runningTimers.has(btnTimer)){ clearInterval(runningTimers.get(btnTimer)); runningTimers.delete(btnTimer); }
+        const el = btnTimer.querySelector('.time'); let left = secs; el.textContent=left+'s'; btnTimer.disabled=true; btnTimer.style.opacity=.85;
+        const id = setInterval(()=>{ left--; el.textContent=left+'s'; if(left<=0){ clearInterval(id); runningTimers.delete(btnTimer); btnTimer.disabled=false; btnTimer.style.opacity=1; el.textContent='¡Listo!'; if(navigator.vibrate) navigator.vibrate([100,50,100]); } }, 1000);
         runningTimers.set(btnTimer, id);
         return;
       }
       const prBtn = e.target.closest('button[data-pr]');
-      if (prBtn) {
-        openPRModal(prBtn.dataset.pr);
-        return;
-      }
-      if (e.target.id === 'addPRBtn') {
-        const ej = $('#ejSelect').value;
-        if (ej) openPRModal(ej);
-        return;
-      }
-      if (e.target.id === 'prClose') {
-        closePRModal();
-        return;
-      }
-      if (e.target.id === 'prSave') {
-        savePRFromModal();
-        return;
-      }
+      if (prBtn){ openPRModal(prBtn.dataset.pr); return; }
+      if (e.target.id==='addPRBtn'){ const ej=$('#ejSelect').value; if(ej) openPRModal(ej); return; }
+      if (e.target.id==='prClose'){ closePRModal(); return; }
+      if (e.target.id==='prSave'){ savePRFromModal(); return; }
     });
 
     // ----- Volumen semanal -----
-    function renderVolumenSemana() {
-      const acc = new Map();
-      let total = 0;
-      PLAN.forEach((list, dia) => {
-        list.forEach(it => {
-          const reps = repsFrom(it.reps);
-          const series = Number(it.series) || 0;
-          const peso = parseFloat(localStorage.getItem(kPeso(dia, it.ejercicio))) || 0;
-          const vol = Math.round(series * reps * peso);
-          const key = it.grupo;
-          acc.set(key, (acc.get(key) || 0) + (isNaN(vol) ? 0 : vol));
-          total += isNaN(vol) ? 0 : vol;
+    function renderVolumenSemana(){
+      const acc = new Map(); let total=0;
+      PLAN.forEach((list, dia)=>{
+        list.forEach(it=>{
+          const reps=repsFrom(it.reps); const series=Number(it.series)||0; const peso=parseFloat(localStorage.getItem(kPeso(dia,it.ejercicio)))||0; const vol=Math.round(series*reps*peso);
+          const key=it.grupo; acc.set(key,(acc.get(key)||0)+vol); total+=vol;
         });
       });
-      const cuerpo = $('#volumenBody');
-      cuerpo.innerHTML = '';
-      [...acc.entries()].sort((a, b) => b[1] - a[1]).forEach(([g, v]) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${g}</td><td><strong>${v.toLocaleString()}</strong></td>`;
-        cuerpo.appendChild(tr);
-      });
+      const cuerpo=$('#volumenBody'); cuerpo.innerHTML='';
+      [...acc.entries()].sort((a,b)=> b[1]-a[1]).forEach(([g,v])=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${g}</td><td><strong>${v.toLocaleString()}</strong></td>`; cuerpo.appendChild(tr); });
       $('#volumenTotal').textContent = total.toLocaleString();
     }
 
     // ----- PR / 1RM -----
-    function refreshEjSelect() {
-      const sel = $('#ejSelect');
-      const prev = sel.value;
-      const names = new Set();
-      PLAN.forEach(list => list.forEach?.(x => names.add(x.ejercicio)));
-      const arr = [...names].sort();
-      sel.innerHTML = arr.map(n => `<option value="${n}">${n}</option>`).join('');
-      if (arr.includes(prev)) sel.value = prev;
+    function refreshEjSelect(){
+      const sel=$('#ejSelect'); const prev=sel.value; const names=new Set(); PLAN.forEach(list=> list.forEach?.(x=>names.add(x.ejercicio))); const arr=[...names].sort(); sel.innerHTML=arr.map(n=>`<option value="${n}">${n}</option>`).join(''); if(arr.includes(prev)) sel.value=prev;
     }
 
     let modalEj = null;
-    function openPRModal(ej) {
-      modalEj = ej;
-      $('#prModalEj').textContent = 'Ejercicio: ' + ej;
-      $('#prKg').value = '';
-      $('#prReps').value = '';
-      $('#prNote').value = '';
-      $('#prModal').style.display = 'flex';
-      $('#prModal').setAttribute('aria-hidden', 'false');
-    }
-    function closePRModal() {
-      $('#prModal').style.display = 'none';
-      $('#prModal').setAttribute('aria-hidden', 'true');
-      modalEj = null;
-    }
-    function savePRFromModal() {
-      const kg = Number($('#prKg').value);
-      const reps = parseInt($('#prReps').value, 10);
-      if (!(kg >= 0) || !(reps >= 1)) {
-        alert('Introduce un peso y reps válidos');
-        return;
-      }
-      const rec = { kg, reps, note: $('#prNote').value.trim(), at: new Date().toISOString() };
-      addPR(modalEj, rec);
-      closePRModal();
-      renderAnalytics(modalEj);
-      renderDia(currentDia);
-    }
+    function openPRModal(ej){ modalEj=ej; $('#prModalEj').textContent='Ejercicio: '+ej; $('#prKg').value=''; $('#prReps').value=''; $('#prNote').value=''; $('#prModal').style.display='flex'; $('#prModal').setAttribute('aria-hidden','false'); }
+    function closePRModal(){ $('#prModal').style.display='none'; $('#prModal').setAttribute('aria-hidden','true'); modalEj=null; }
+    function savePRFromModal(){ const kg=Number($('#prKg').value); const reps=parseInt($('#prReps').value,10); if(!(kg>=0) || !(reps>=1)){ alert('Introduce un peso y reps válidos'); return;} const rec={kg,reps,note:$('#prNote').value.trim(),at:new Date().toISOString()}; addPR(modalEj, rec); closePRModal(); renderAnalytics(modalEj); renderDia(currentDia); }
 
-    function oneRepMaxEpley(w, r) { return w * (1 + r / 30); }
-    function oneRepMaxBrzycki(w, r) { return w * (36 / (37 - r)); }
+    function oneRepMaxEpley(w,r){ return w*(1+r/30); }
+    function oneRepMaxBrzycki(w,r){ return w*(36/(37-r)); }
 
-    function renderAnalytics(ej) {
-      if (!ej) {
-        const ctx = $('#prChart').getContext('2d');
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        $('#prMax').textContent = '—';
-        $('#oneRM').textContent = '—';
-        $('#lastNote').textContent = '—';
-        $('#percentBody').innerHTML = '';
-        return;
-      }
-      const list = prList(ej).sort((a, b) => new Date(a.at) - new Date(b.at));
-      const ctx = $('#prChart').getContext('2d');
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      const padL = 40, padB = 24, padT = 10, padR = 10;
-      const W = ctx.canvas.width, H = ctx.canvas.height;
-      const X0 = padL, Y0 = H - padB, X1 = W - padR, Y1 = padT;
-      ctx.strokeStyle = getComputedStyle(document.documentElement).color;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(X0, Y0);
-      ctx.lineTo(X1, Y0);
-      ctx.moveTo(X0, Y0);
-      ctx.lineTo(X0, Y1);
-      ctx.stroke();
-      if (list.length) {
-        const ys = list.map(p => p.kg);
-        const xmin = 0, xmax = Math.max(1, list.length - 1);
-        const ymin = Math.min(...ys), ymax = Math.max(...ys);
-        const sx = (X1 - X0) / (xmax || 1);
-        const sy = (Y0 - Y1) / ((ymax - ymin) || 1);
-        ctx.fillStyle = getComputedStyle(document.body).color;
-        ctx.font = '12px system-ui';
-        for (let i = 0; i <= xmax; i++) {
-          const x = X0 + i * sx;
-          ctx.globalAlpha = .15;
-          ctx.beginPath();
-          ctx.moveTo(x, Y0);
-          ctx.lineTo(x, Y1);
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-          ctx.fillText(String(i + 1), x - 3, Y0 + 14);
-        }
-        const steps = 4;
-        for (let i = 0; i <= steps; i++) {
-          const y = Y0 - i * (Y0 - Y1) / steps;
-          const val = (ymax - i * (ymax - ymin) / steps).toFixed(0);
-          ctx.globalAlpha = .15;
-          ctx.beginPath();
-          ctx.moveTo(X0, y);
-          ctx.lineTo(X1, y);
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-          ctx.fillText(val + 'kg', 4, y - 2);
-        }
-        ctx.beginPath();
-        list.forEach((p, i) => {
-          const x = X0 + i * sx;
-          const y = Y0 - (p.kg - ymin) * sy;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        });
-        ctx.strokeStyle = '#60a5fa';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        list.forEach((p, i) => {
-          const x = X0 + i * sx;
-          const y = Y0 - (p.kg - ymin) * sy;
-          ctx.beginPath();
-          ctx.arc(x, y, 3, 0, Math.PI * 2);
-          ctx.fillStyle = '#34d399';
-          ctx.fill();
-        });
-        const last = list[list.length - 1];
-        const pr = list.reduce((a, b) => b.kg > a.kg ? b : a, list[0]);
+    function renderAnalytics(ej){
+      if(!ej){ const ctx=$('#prChart').getContext('2d'); ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height); $('#prMax').textContent='—'; $('#oneRM').textContent='—'; $('#lastNote').textContent='—'; $('#percentBody').innerHTML=''; return; }
+      const list = prList(ej).sort((a,b)=> new Date(a.at)-new Date(b.at));
+      const ctx = $('#prChart').getContext('2d'); ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+      const padL=40, padB=24, padT=10, padR=10; const W=ctx.canvas.width, H=ctx.canvas.height; const X0=padL, Y0=H-padB, X1=W-padR, Y1=padT;
+      ctx.strokeStyle=getComputedStyle(document.documentElement).color; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(X0,Y0); ctx.lineTo(X1,Y0); ctx.moveTo(X0,Y0); ctx.lineTo(X0,Y1); ctx.stroke();
+      if(list.length){
+        const ys=list.map(p=>p.kg); const xmin=0, xmax=Math.max(1,list.length-1); const ymin=Math.min(...ys), ymax=Math.max(...ys); const sx=(X1-X0)/(xmax||1); const sy=(Y0-Y1)/((ymax-ymin)||1);
+        ctx.fillStyle=getComputedStyle(document.body).color; ctx.font='12px system-ui';
+        for(let i=0;i<=xmax;i++){ const x=X0+i*sx; ctx.globalAlpha=.15; ctx.beginPath(); ctx.moveTo(x,Y0); ctx.lineTo(x,Y1); ctx.stroke(); ctx.globalAlpha=1; ctx.fillText(String(i+1), x-3, Y0+14); }
+        const steps=4; for(let i=0;i<=steps;i++){ const y=Y0 - i*(Y0-Y1)/steps; const val=(ymax - i*(ymax-ymin)/steps).toFixed(0); ctx.globalAlpha=.15; ctx.beginPath(); ctx.moveTo(X0,y); ctx.lineTo(X1,y); ctx.stroke(); ctx.globalAlpha=1; ctx.fillText(val+'kg', 4, y-2); }
+        ctx.beginPath(); list.forEach((p,i)=>{ const x=X0+i*sx; const y=Y0 - (p.kg - ymin)*sy; if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.strokeStyle='#60a5fa'; ctx.lineWidth=2; ctx.stroke();
+        list.forEach((p,i)=>{ const x=X0+i*sx; const y=Y0 - (p.kg - ymin)*sy; ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fillStyle='#34d399'; ctx.fill(); });
+        const last=list[list.length-1]; const pr=list.reduce((a,b)=> b.kg>a.kg?b:a, list[0]);
         $('#prMax').textContent = `${pr.kg.toFixed(1)} kg @${pr.reps} (${fmtDate(pr.at)})`;
-        const epl = oneRepMaxEpley(last.kg, last.reps), brz = oneRepMaxBrzycki(last.kg, last.reps), avg = (epl + brz) / 2;
-        $('#oneRM').textContent = `${epl.toFixed(1)} / ${brz.toFixed(1)} / ${avg.toFixed(1)} kg`;
+        const epl=oneRepMaxEpley(last.kg,last.reps), brz=oneRepMaxBrzycki(last.kg,last.reps), avg=(epl+brz)/2; $('#oneRM').textContent=`${epl.toFixed(1)} / ${brz.toFixed(1)} / ${avg.toFixed(1)} kg`;
         $('#lastNote').textContent = last.note || '—';
-        const targets = [3, 4, 5, 6, 8, 10, 12];
-        const tbody = $('#percentBody');
-        tbody.innerHTML = '';
-        targets.forEach(r => {
-          const pct = 1 / (1 + r / 30);
-          const weight = avg * pct;
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${r}</td><td>${(pct * 100).toFixed(1)}%</td><td>${weight.toFixed(1)} kg</td>`;
-          tbody.appendChild(tr);
-        });
+        const targets=[3,4,5,6,8,10,12]; const tbody=$('#percentBody'); tbody.innerHTML='';
+        targets.forEach(r=>{ const pct = 1/(1 + r/30); const weight = avg * pct; const tr=document.createElement('tr'); tr.innerHTML=`<td>${r}</td><td>${(pct*100).toFixed(1)}%</td><td>${weight.toFixed(1)} kg</td>`; tbody.appendChild(tr); });
       } else {
-        $('#prMax').textContent = '—';
-        $('#oneRM').textContent = '—';
-        $('#lastNote').textContent = '—';
-        $('#percentBody').innerHTML = '';
+        $('#prMax').textContent='—'; $('#oneRM').textContent='—'; $('#lastNote').textContent='—'; $('#percentBody').innerHTML='';
       }
       $('#ejSelect').value = ej;
     }
 
-    // ----- Inicialización -----
-    function initAnalytics() {
-      refreshEjSelect();
-      const first = $('#ejSelect').querySelector('option')?.value || '';
-      $('#ejSelect').addEventListener('change', e => renderAnalytics(e.target.value));
-      if (first) renderAnalytics(first);
-    }
+    // ----- Init -----
+    function initAnalytics(){ refreshEjSelect(); const first=$('#ejSelect').querySelector('option')?.value || ''; $('#ejSelect').addEventListener('change', e=> renderAnalytics(e.target.value)); if(first) renderAnalytics(first); }
 
-    if (!fallbackDia) {
-      document.querySelector('main').innerHTML = '<div class="card">No hay datos disponibles.</div>';
-    } else {
-      renderDia(currentDia);
-      initAnalytics();
-    }
-  </script>
-</body>
+    if (!fallbackDia){ document.querySelector('main').innerHTML = '<div class="card">No hay datos disponibles.</div>'; } else { renderDia(currentDia); initAnalytics(); }
+  </script></body>
 </html>
