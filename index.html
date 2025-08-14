@@ -380,6 +380,7 @@
       $('#volumenTotal').textContent = total.toLocaleString();
     }
 
+    // ----- PR / 1RM -----
     function refreshEjSelect(){
       const sel=$('#ejSelect'); const prev=sel.value; const names=new Set(); PLAN.forEach(list=> list.forEach?.(x=>names.add(x.ejercicio))); const arr=[...names].sort(); sel.innerHTML=arr.map(n=>`<option value="${n}">${n}</option>`).join(''); if(arr.includes(prev)) sel.value=prev;
     }
